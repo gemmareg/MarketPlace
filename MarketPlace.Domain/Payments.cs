@@ -4,8 +4,8 @@ namespace MarketPlace.Domain
 {
     public class Payment
     {
-        public int Id { get; set; }
-        public int PedidoId { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid PedidoId { get; set; }
         public Order? Pedido { get; set; }
 
         public decimal Monto { get; set; }

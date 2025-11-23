@@ -2,22 +2,21 @@
 {
     public class CartItemTests
     {
-        private const int VALID_USERID = 55;
-        private const int VALID_PRODUCTID = 110;
+        private const string VALID_USERID = "fe88f2d6-e7a1-4d2e-ae88-d70c32917976";
+        private const string VALID_PRODUCTID = "fde2b44f-9ceb-4f3b-bbe4-3dedc9edd849";
+        private const string EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
         private const int VALID_QUANTITY = 3;
 
         [Theory]
-        // Casos inválidos
-        [InlineData(0, VALID_PRODUCTID, VALID_QUANTITY, false, "El usuario no es válido")]      // userId inválido
-        [InlineData(VALID_USERID, 0, VALID_QUANTITY, false, "El producto no es válido")]     // productId inválido
-        [InlineData(VALID_USERID, VALID_PRODUCTID, 0, false, "La cantidad no es válida")]     // quantity inválida
-                                                                     // Caso válido
-        [InlineData(1, 1, 5, true, "")]                               // todos válidos
-        public void Create_ShouldReturnExpectedResult(int userId, int productId, int quantity, bool expectedSuccess, string expectedMessage)
+        [InlineData(EMPTY_GUID, VALID_PRODUCTID, VALID_QUANTITY, false, "El usuario no es válido")]
+        [InlineData(VALID_USERID, EMPTY_GUID, VALID_QUANTITY, false, "El producto no es válido")]
+        [InlineData(VALID_USERID, VALID_PRODUCTID, 0, false, "La cantidad no es válida")]
+        [InlineData(VALID_USERID, VALID_PRODUCTID, VALID_QUANTITY, true, "")]
+        public void Create_ShouldReturnExpectedResult(string userId, string productId, int quantity, bool expectedSuccess, string expectedMessage)
         {
 
             // Act
-            var result = CartItem.Create(userId, productId, quantity);
+            var result = CartItem.Create(new Guid(userId), new Guid(productId), quantity);
 
             // Assert
             Assert.Equal(expectedSuccess, result.Success);
@@ -26,8 +25,8 @@
             if (expectedSuccess)
             {
                 Assert.NotNull(result.Data);
-                Assert.Equal(userId, result.Data.UserId);
-                Assert.Equal(productId, result.Data.ProductId);
+                Assert.Equal(userId, result.Data.UserId.ToString());
+                Assert.Equal(productId, result.Data.ProductId.ToString());
                 Assert.Equal(quantity, result.Data.Quantity);
             }
             else
