@@ -1,24 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using MarketPlace.Shared;
+using System.Collections.Generic;
 using System;
 
 namespace MarketPlace.Domain
 {
     public class Product
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public string Nombre { get; set; } = string.Empty;
-        public string Descripcion { get; set; } = string.Empty;
-        public decimal Price { get; set; }
-        public int Stock { get; set; }
-        public DateTime DateCreate { get; set; } = DateTime.UtcNow;
-        public ProductState State { get; set; } = ProductState.Active;
+        public Guid Id { get; private set; } = Guid.NewGuid();
+        public Guid CategoryId { get; private set; }
+        public Guid SellerId { get; private set; }
+
+        public string Name { get; private set; } = string.Empty;
+        public string Description { get; private set; } = string.Empty;
+        public decimal Price { get; private set; }
+        public int Stock { get; private set; }
+        public DateTime DateCreated { get; private set; } = DateTime.UtcNow;
+        public ProductState State { get; private set; } = ProductState.Inactive;
 
         // Relaciones
-        public int CategoryId { get; set; }
-        public Category Category{ get; set; }
-
-        public int SellerId { get; set; }
-        public User Seller { get; set; }
+        public Category Category { get; private set; }
+        public User Seller { get; private set; }
 
         public ICollection<OrderItem>? Products { get; set; }
         public ICollection<Review>? Reviews { get; set; }
@@ -29,6 +30,58 @@ namespace MarketPlace.Domain
             Active,
             Inactive,
             SoldOut
+        }
+
+        private Product() { }
+
+        public static Result<Product> Create(
+            Category category,
+            User seller,
+            string name,
+            string description,
+            decimal price,
+            int stock,
+            DateTime dateCreated,
+            ProductState state)
+        {
+            if (category is null)
+                return Result<Product>.Fail("El producto debe estar asignado a una categoría.");
+
+            if (seller is null)
+                return Result<Product>.Fail("Es necesario asignar un vendedor.");
+
+            if (string.IsNullOrEmpty(name))
+                return Result<Product>.Fail("El producto debe tener un nombre.");
+
+            if (price < 0)
+                return Result<Product>.Fail("El producto debe tener un precio de cero o superior.");
+
+            if (stock < 0)
+                return Result<Product>.Fail("El producto debe tener un stock de cero o superior.");
+
+            if (string.IsNullOrEmpty(description))
+                description = string.Empty;
+
+            var product = new Product()
+            {
+                CategoryId = category.Id,
+                SellerId = seller.Id,
+                Name = name,
+                Description = description,
+                Price = price,
+                Stock = stock,
+                DateCreated = dateCreated,
+                State = state,
+
+                Category = category,
+                Seller = seller,
+
+                Products = new List<OrderItem>(),
+                Reviews = new List<Review>(),
+                InCart = new List<CartItem>()
+            };
+
+            return Result<Product>.Ok(product);
         }
     }
 }
