@@ -45,19 +45,19 @@ namespace MarketPlace.Domain
             ProductState state)
         {
             if (category is null)
-                return Result<Product>.Fail("El producto debe estar asignado a una categoría.");
+                return Result<Product>.Fail(ErrorMessages.INVALID_CATEGORY_FOR_PRODUCT);
 
             if (seller is null)
-                return Result<Product>.Fail("Es necesario asignar un vendedor.");
+                return Result<Product>.Fail(ErrorMessages.INVALID_SELLER_FOR_PRODUCT);
 
             if (string.IsNullOrEmpty(name))
-                return Result<Product>.Fail("El producto debe tener un nombre.");
+                return Result<Product>.Fail(ErrorMessages.INVALID_PRODUCT_NAME);
 
             if (price < 0)
-                return Result<Product>.Fail("El producto debe tener un precio de cero o superior.");
+                return Result<Product>.Fail(ErrorMessages.INVALID_PRODUCT_PRICE);
 
             if (stock < 0)
-                return Result<Product>.Fail("El producto debe tener un stock de cero o superior.");
+                return Result<Product>.Fail(ErrorMessages.INVALID_PRODUCT_STOCK);
 
             if (string.IsNullOrEmpty(description))
                 description = string.Empty;

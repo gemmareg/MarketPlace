@@ -19,10 +19,10 @@ namespace MarketPlace.Domain
         public static Result<OrderItem> Create(CartItem cartItem, Order order)
         {
             if (order == null)
-                return Result<OrderItem>.Fail("No se pudo crear el item del pedido.");
+                return Result<OrderItem>.Fail(ErrorMessages.INVALID_ORDER_FOR_ORDER_ITEM);
 
             if (cartItem == null)
-                return Result<OrderItem>.Fail("El item del carrito es inválido.");
+                return Result<OrderItem>.Fail(ErrorMessages.INVALID_CART_ITEM_FOR_ORDER_ITEM);
 
             var orderItem = new OrderItem();          
                         
