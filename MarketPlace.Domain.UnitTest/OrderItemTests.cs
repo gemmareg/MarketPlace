@@ -1,18 +1,25 @@
-﻿namespace MarketPlace.Domain.UnitTest
+﻿using MarketPlace.Shared;
+
+namespace MarketPlace.Domain.UnitTest
 {
     public class OrderItemTests
     {
         private CartItem _cartItem;
         private Order _order;
+        private User _user;
 
         private const string VALID_USERID = "fe88f2d6-e7a1-4d2e-ae88-d70c32917976";
         private const string VALID_PRODUCTID = "fde2b44f-9ceb-4f3b-bbe4-3dedc9edd849";
         private const int VALID_QUANTITY = 3;
+        private const string USERNAME = "testuser";
+        private const string USEREMAIL = "testuser@test.com";
+        private const string PASSWORD = "hashedpassword";
 
         public OrderItemTests()
         {
+            _user = User.Create(USERNAME, USEREMAIL, PASSWORD).Data!;
             _cartItem = CartItem.Create(new Guid(VALID_USERID), new Guid(VALID_PRODUCTID), VALID_QUANTITY).Data!;
-            _order = Order.Create(new User(), [_cartItem]).Data!;
+            _order = Order.Create(_user, [_cartItem]).Data!;
         }
 
         [Fact]
@@ -23,7 +30,7 @@
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("No se pudo crear el item del pedido.", result.Message);
+            Assert.Equal(ErrorMessages.INVALID_ORDER_FOR_ORDER_ITEM, result.Message);
             Assert.Null(result.Data);
         }
 
@@ -35,7 +42,7 @@
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("El item del carrito es inválido.", result.Message);
+            Assert.Equal(ErrorMessages.INVALID_CART_ITEM_FOR_ORDER_ITEM, result.Message);
             Assert.Null(result.Data);
         }
 

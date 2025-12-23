@@ -1,4 +1,6 @@
-﻿namespace MarketPlace.Domain.UnitTest
+﻿using MarketPlace.Shared;
+
+namespace MarketPlace.Domain.UnitTest
 {
     public class CartItemTests
     {
@@ -8,9 +10,9 @@
         private const int VALID_QUANTITY = 3;
 
         [Theory]
-        [InlineData(EMPTY_GUID, VALID_PRODUCTID, VALID_QUANTITY, false, "El usuario no es válido")]
-        [InlineData(VALID_USERID, EMPTY_GUID, VALID_QUANTITY, false, "El producto no es válido")]
-        [InlineData(VALID_USERID, VALID_PRODUCTID, 0, false, "La cantidad no es válida")]
+        [InlineData(EMPTY_GUID, VALID_PRODUCTID, VALID_QUANTITY, false, ErrorMessages.INVALID_USER)]
+        [InlineData(VALID_USERID, EMPTY_GUID, VALID_QUANTITY, false, ErrorMessages.INVALID_PRODUCT)]
+        [InlineData(VALID_USERID, VALID_PRODUCTID, 0, false, ErrorMessages.INVALID_QUANTITY)]
         [InlineData(VALID_USERID, VALID_PRODUCTID, VALID_QUANTITY, true, "")]
         public void Create_ShouldReturnExpectedResult(string userId, string productId, int quantity, bool expectedSuccess, string expectedMessage)
         {

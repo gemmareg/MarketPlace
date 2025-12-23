@@ -7,12 +7,12 @@ namespace MarketPlace.Domain
     public class Order
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public Guid UsuarioId { get; set; }
-        public User Usuario { get; set; }
+        public Guid UserId { get; set; }
+        public User User { get; set; }
 
-        public DateTime FechaPedido { get; set; } = DateTime.UtcNow;
+        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
         public decimal Total { get; set; }
-        public EstadoPedido Estado { get; set; } = EstadoPedido.Pendiente;
+        public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
         // Relaciones
         public ICollection<OrderItem> OrderItems { get; set; }
@@ -23,15 +23,14 @@ namespace MarketPlace.Domain
         public static Result<Order> Create(User user, List<CartItem> cartItems)
         {
             if (user is null)
-                return Result<Order>.Fail("El usuario no puede ser nulo");
+                return Result<Order>.Fail(ErrorMessages.INVALID_USER_FOR_ORDER);
 
             if (cartItems == null || cartItems.Count == 0)
-                return Result<Order>.Fail("La lista del carrito no puede estar vacía.");
-
+                return Result<Order>.Fail(ErrorMessages.EMPTY_CART_ITEMS);
             var order = new Order()
             {
-                UsuarioId = user.Id,
-                Usuario = user,
+                UserId = user.Id,
+                User = user,
                 OrderItems = new List<OrderItem>()
             };
 
@@ -62,13 +61,13 @@ namespace MarketPlace.Domain
             return total;
         }
 
-        public enum EstadoPedido
+        public enum OrderStatus
         {
-            Pendiente,
-            Pagado,
-            Enviado,
-            Entregado,
-            Cancelado
+            Pending,
+            Paid,
+            Sent,
+            Delivered,
+            Canceled
         }
     }
 }

@@ -18,13 +18,13 @@ namespace MarketPlace.Domain
         public static Result<CartItem> Create(Guid userId, Guid productId, int quantity)
         {
             if (userId == Guid.Empty) 
-                return Result<CartItem>.Fail("El usuario no es válido");
+                return Result<CartItem>.Fail(ErrorMessages.INVALID_USER);
 
             if (productId == Guid.Empty)
-                return Result<CartItem>.Fail("El producto no es válido");
+                return Result<CartItem>.Fail(ErrorMessages.INVALID_PRODUCT);
 
             if(quantity == 0)
-                return Result<CartItem>.Fail("La cantidad no es válida");
+                return Result<CartItem>.Fail(ErrorMessages.INVALID_QUANTITY);
 
             var cartItem = new CartItem();
             cartItem.UserId = userId;
