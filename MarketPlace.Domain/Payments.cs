@@ -1,16 +1,16 @@
-﻿using System;
+﻿using MarketPlace.Domain.Common;
+using System;
+using static MarketPlace.Shared.Enums;
 
 namespace MarketPlace.Domain
 {
-    public class Payment
+    public class Payment : BaseEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public Guid PedidoId { get; set; }
-        public Order? Pedido { get; set; }
-
-        public decimal Monto { get; set; }
-        public string MetodoPago { get; set; } = "tarjeta";
-        public string Estado { get; set; } = "pendiente"; // pendiente, completado, fallido
+        public Guid OrderId { get; set; }
+        public Order? Order { get; set; }
+        public decimal Amount { get; set; }
+        public string PaymentMethod { get; set; } = "tarjeta";
+        public PaymentState State { get; set; } = PaymentState.Pending; // pendiente, completado, fallido
         public DateTime FechaPago { get; set; } = DateTime.UtcNow;
     }
 }

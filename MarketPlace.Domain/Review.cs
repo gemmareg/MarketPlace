@@ -1,11 +1,11 @@
-﻿using MarketPlace.Shared;
+﻿using MarketPlace.Domain.Common;
+using MarketPlace.Shared;
 using System;
 
 namespace MarketPlace.Domain
 {
-    public class Review
+    public class Review : BaseEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
         public Guid UserId { get; set; }
         public User User { get; set; }
 

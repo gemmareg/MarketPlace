@@ -12,12 +12,10 @@ namespace MarketPlace.Domain.UnitTest
         private const string VALID_PRODUCTID = "fde2b44f-9ceb-4f3b-bbe4-3dedc9edd849";
         private const int VALID_QUANTITY = 3;
         private const string USERNAME = "testuser";
-        private const string USEREMAIL = "testuser@test.com";
-        private const string PASSWORD = "hashedpassword";
 
         public OrderItemTests()
         {
-            _user = User.Create(USERNAME, USEREMAIL, PASSWORD).Data!;
+            _user = User.Create(new Guid(VALID_USERID), USERNAME).Data!;
             _cartItem = CartItem.Create(new Guid(VALID_USERID), new Guid(VALID_PRODUCTID), VALID_QUANTITY).Data!;
             _order = Order.Create(_user, [_cartItem]).Data!;
         }

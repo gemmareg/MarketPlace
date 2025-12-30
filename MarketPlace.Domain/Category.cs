@@ -1,12 +1,12 @@
-﻿using MarketPlace.Shared;
+﻿using MarketPlace.Domain.Common;
+using MarketPlace.Shared;
 using System;
 using System.Collections.Generic;
 
 namespace MarketPlace.Domain
 {
-    public class Category
+    public class Category : BaseEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
 
