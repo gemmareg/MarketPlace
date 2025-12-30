@@ -2,6 +2,7 @@
 using MarketPlace.Shared;
 using System;
 using System.Collections.Generic;
+using static MarketPlace.Shared.Enums;
 
 namespace MarketPlace.Domain
 {
@@ -59,15 +60,6 @@ namespace MarketPlace.Domain
                 }
             }
             return total;
-        }
-
-        public enum OrderStatus
-        {
-            Pending,
-            Paid,
-            Sent,
-            Delivered,
-            Canceled
         }
     }
 }

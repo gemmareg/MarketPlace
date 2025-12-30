@@ -17,15 +17,16 @@ namespace MarketPlace.Domain
 
         private User() { }
 
-        public static Result<User> Create(Guid Id, string name)
+        public static Result<User> Create(Guid id, string name)
         {
-            if(Id == Guid.Empty)
+            if(id == Guid.Empty)
                 return Result<User>.Fail(ErrorMessages.INVALID_USER_ID);
             if (name == null || name.Trim() == string.Empty)
                 return Result<User>.Fail(ErrorMessages.INVALID_USER_NAME);
 
             var user = new User();
             user.Name = name;
+            user.Id = id;
 
             return Result<User>.Ok(user);
         }  

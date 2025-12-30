@@ -24,5 +24,13 @@
             Delivered,
             Canceled
         }
+
+        public enum PaymentMethods
+        {
+            CreditCard,
+            DebitCard,
+            PayPal,
+            BankTransfer
+        }
     }
 }

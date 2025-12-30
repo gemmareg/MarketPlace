@@ -9,7 +9,7 @@ namespace MarketPlace.Domain
         public Guid OrderId { get; set; }
         public Order? Order { get; set; }
         public decimal Amount { get; set; }
-        public string PaymentMethod { get; set; } = "tarjeta";
+        public PaymentMethods PaymentMethod { get; set; } = PaymentMethods.DebitCard;
         public PaymentState State { get; set; } = PaymentState.Pending; // pendiente, completado, fallido
         public DateTime FechaPago { get; set; } = DateTime.UtcNow;
     }
