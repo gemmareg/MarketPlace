@@ -1,20 +1,21 @@
 ﻿using MarketPlace.Domain.Common;
 using MarketPlace.Shared;
+using MarketPlace.Shared.Result.Generic;
 using System;
 
 namespace MarketPlace.Domain
 {
     public class Review : BaseEntity
     {
-        public Guid UserId { get; set; }
-        public User User { get; set; }
+        public Guid UserId { get; private set; }
+        public User User { get; private set; }
 
-        public Guid ProductId { get; set; }
-        public Product Product { get; set; }
+        public Guid ProductId { get; private set; }
+        public Product Product { get; private set; }
 
-        public int Rating { get; set; }
-        public string? Comment { get; set; }
-        public DateTime Date { get; set; } = DateTime.UtcNow;
+        public int Rating { get; private set; }
+        public string? Comment { get; private set; }
+        public DateTime Date { get; private set; } = DateTime.UtcNow;
 
         private Review() { }
 

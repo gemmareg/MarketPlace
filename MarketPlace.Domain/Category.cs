@@ -1,5 +1,6 @@
 ﻿using MarketPlace.Domain.Common;
 using MarketPlace.Shared;
+using MarketPlace.Shared.Result.Generic;
 using System;
 using System.Collections.Generic;
 
@@ -7,8 +8,8 @@ namespace MarketPlace.Domain
 {
     public class Category : BaseEntity
     {
-        public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; }
+        public string Name { get; private set; } = string.Empty;
+        public string? Description { get; private set; }
 
         // Relaciones
         public ICollection<Product>? Productos { get; set; }

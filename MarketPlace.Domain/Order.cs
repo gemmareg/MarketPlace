@@ -1,5 +1,7 @@
 ﻿using MarketPlace.Domain.Common;
 using MarketPlace.Shared;
+using MarketPlace.Shared.Result.Generic;
+using MarketPlace.Shared.Result.NonGeneric;
 using System;
 using System.Collections.Generic;
 using static MarketPlace.Shared.Enums;
@@ -8,12 +10,12 @@ namespace MarketPlace.Domain
 {
     public class Order : BaseEntity
     {
-        public Guid UserId { get; set; }
-        public User User { get; set; }
+        public Guid UserId { get; private set; }
+        public User User { get; private set; }
 
-        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
-        public decimal Total { get; set; }
-        public OrderStatus Status { get; set; } = OrderStatus.Pending;
+        public DateTime OrderDate { get; private set; } = DateTime.UtcNow;
+        public decimal Total { get; private set; }
+        public OrderStatus Status { get; private set; } = OrderStatus.Pending;
 
         // Relaciones
         public ICollection<OrderItem> OrderItems { get; set; }
@@ -39,7 +41,7 @@ namespace MarketPlace.Domain
             {
                 var result = OrderItem.Create(cartItem, order);
                 if (!result.Success || result.Data is null)
-                    return Result<Order>.Fail(result.Message ?? "Error al crear OrderItem desde CartItem.");
+                    return Result<Order>.Fail(result.Message ?? ErrorMessages.ERROR_CREATING_ORDER_ITEM);
 
                 order.OrderItems.Add(result.Data);
             }
@@ -60,6 +62,15 @@ namespace MarketPlace.Domain
                 }
             }
             return total;
+        }
+
+        public Result MarkAsPaid()
+        {
+            if (Status != OrderStatus.Pending)
+                return Result.Fail(ErrorMessages.ORDER_CANNOT_BE_PAID);
+
+            Status = OrderStatus.Paid;
+            return Result.Ok();
         }
     }
 }

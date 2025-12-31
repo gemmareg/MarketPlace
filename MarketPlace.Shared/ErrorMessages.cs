@@ -13,6 +13,8 @@
         // Order errors
         public const string INVALID_USER_FOR_ORDER = "El usuario no puede ser nulo";
         public const string EMPTY_CART_ITEMS = "La lista del carrito no puede estar vacía.";
+        public const string ERROR_CREATING_ORDER_ITEM = "Error al crear OrderItem desde CartItem.";
+        public const string ORDER_CANNOT_BE_PAID = "La orden ya ha sido pagada.";
 
         // OrderItem errors
         public const string INVALID_ORDER_FOR_ORDER_ITEM = "El pedido no puede ser nulo";
@@ -33,5 +35,10 @@
         // User errors
         public const string INVALID_USER_NAME = "El nombre del usuario no puede estar vacío.";
         public const string INVALID_USER_ID = "La Id no es válida.";
+
+        // Payment errors
+        public const string INVALID_ORDER_FOR_PAYMENT = "El pedido no puede ser nulo para crear un pago.";
+        public const string INVALID_PAYMENT_AMOUNT = "El monto del pago no puede ser negativo.";
+        public const string INVALID_PAYMENT_METHOD = "El método de pago no es válido.";
     }
 }

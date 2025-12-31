@@ -1,5 +1,6 @@
 ﻿using MarketPlace.Domain.Common;
 using MarketPlace.Shared;
+using MarketPlace.Shared.Result.Generic;
 using System;
 
 namespace MarketPlace.Domain
