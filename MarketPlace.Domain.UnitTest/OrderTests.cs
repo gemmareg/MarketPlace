@@ -4,15 +4,14 @@ namespace MarketPlace.Domain.UnitTest
 {
     public class OrderTests
     {
+        private const string VALID_USERID = "fe88f2d6-e7a1-4d2e-ae88-d70c32917976";
         public const string VALID_USER_NAME = "Ramon";
-        public const string VALID_USER_EMAIL = "ramon@test.com";
-        public const string INVALID_USER_PASSWORD = "abcd";
 
         [Fact]
         public void Create_ShouldReturnOkResult_WhenParametersAreValid()
         {
             // Arrange
-            var user = User.Create(VALID_USER_NAME, VALID_USER_EMAIL, INVALID_USER_PASSWORD).Data!;
+            var user = User.Create(new Guid(VALID_USERID), VALID_USER_NAME).Data!;
             var cartItems = new List<CartItem>(){
                     CartItem.Create(user.Id, Guid.NewGuid(), 2).Data!,
                     CartItem.Create(user.Id, Guid.NewGuid(), 1).Data!
@@ -51,7 +50,7 @@ namespace MarketPlace.Domain.UnitTest
         public void Create_ShouldReturnFailResult_WhenCartItemsIsEmpty()
         {
             // Arrange
-            var user = User.Create(VALID_USER_NAME, VALID_USER_EMAIL, INVALID_USER_PASSWORD).Data!;
+            var user = User.Create(new Guid(VALID_USERID), VALID_USER_NAME).Data!;
             var cartItems = new List<CartItem>();
 
             // Act

@@ -6,6 +6,7 @@ namespace MarketPlace.Domain.UnitTest
     public class ReviewTests
     {
         // user fixtures
+        private const string VALID_USERID = "fe88f2d6-e7a1-4d2e-ae88-d70c32917976";
         private const string USERNAME = "testuser";
         private const string SELLERNAME = "testseller";
         private const string USEREMAIL = "testuser@test.com";
@@ -29,8 +30,8 @@ namespace MarketPlace.Domain.UnitTest
         public void Create_ValidParameters_ReturnsSuccess()
         {
             // Arrange
-            var user = User.Create(USERNAME, USEREMAIL, PASSWORD).Data!;
-            var seller = User.Create(SELLERNAME, SELLEREMAIL, PASSWORD).Data!;
+            var user = User.Create(new Guid(VALID_USERID), USERNAME).Data!;
+            var seller = User.Create(new Guid(VALID_USERID), SELLERNAME).Data!;
             var category = Category.Create(CATEGORYNAME, CATEGORYDESCRIPTION).Data!;
             var product = Product.Create(category, seller, PRODUCTNAME, PRODUCTDESCRIPTION, PRODUCTPRICE, PRODUCTSTOCK, new DateTime(2023, 11, 22), ProductState.Active).Data!;
 
@@ -48,7 +49,7 @@ namespace MarketPlace.Domain.UnitTest
         public void Create_NullUser_ReturnsFailure()
         {
             // Arrange
-            var seller = User.Create(SELLERNAME, SELLEREMAIL, PASSWORD).Data!;
+            var seller = User.Create(new Guid(VALID_USERID), SELLERNAME).Data!;
             var category = Category.Create(CATEGORYNAME, CATEGORYDESCRIPTION).Data!;
             var product = Product.Create(category, seller, PRODUCTNAME, PRODUCTDESCRIPTION, PRODUCTPRICE, PRODUCTSTOCK, new DateTime(2023, 11, 22), ProductState.Active).Data!;
 
@@ -64,8 +65,8 @@ namespace MarketPlace.Domain.UnitTest
         public void Create_NullProduct_ReturnsFailure()
         {
             // Arrange
-            var user = User.Create(USERNAME, USEREMAIL, PASSWORD).Data!;
-            var seller = User.Create(SELLERNAME, SELLEREMAIL, PASSWORD).Data!;
+            var user = User.Create(new Guid(VALID_USERID), USERNAME).Data!;
+            var seller = User.Create(new Guid(VALID_USERID), SELLERNAME).Data!;
             var category = Category.Create(CATEGORYNAME, CATEGORYDESCRIPTION).Data!;
 
             // Act
@@ -80,8 +81,8 @@ namespace MarketPlace.Domain.UnitTest
         public void Create_InvalidRating_ReturnsFailure()
         {
             // Arrange
-            var user = User.Create(USERNAME, USEREMAIL, PASSWORD).Data!;
-            var seller = User.Create(SELLERNAME, SELLEREMAIL, PASSWORD).Data!;
+            var user = User.Create(new Guid(VALID_USERID), USERNAME).Data!;
+            var seller = User.Create(new Guid(VALID_USERID), SELLERNAME).Data!;
             var category = Category.Create(CATEGORYNAME, CATEGORYDESCRIPTION).Data!;
             var product = Product.Create(category, seller, PRODUCTNAME, PRODUCTDESCRIPTION, PRODUCTPRICE, PRODUCTSTOCK, new DateTime(2023, 11, 22), ProductState.Active).Data!;
 

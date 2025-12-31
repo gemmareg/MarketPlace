@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using MarketPlace.Domain.Common;
 using MarketPlace.Shared;
+using System;
+using System.Collections.Generic;
+using static MarketPlace.Shared.Enums;
 
 namespace MarketPlace.Domain
 {
-    public class Order
+    public class Order : BaseEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
         public Guid UserId { get; set; }
         public User User { get; set; }
 
@@ -59,15 +60,6 @@ namespace MarketPlace.Domain
                 }
             }
             return total;
-        }
-
-        public enum OrderStatus
-        {
-            Pending,
-            Paid,
-            Sent,
-            Delivered,
-            Canceled
         }
     }
 }

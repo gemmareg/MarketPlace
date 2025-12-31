@@ -32,7 +32,6 @@
 
         // User errors
         public const string INVALID_USER_NAME = "El nombre del usuario no puede estar vacío.";
-        public const string INVALID_USER_EMAIL = "El email del usuario no puede estar vacío.";
-        public const string INVALID_USER_PASSWORD = "La contraseña del usuario no puede estar vacía.";
+        public const string INVALID_USER_ID = "La Id no es válida.";
     }
 }

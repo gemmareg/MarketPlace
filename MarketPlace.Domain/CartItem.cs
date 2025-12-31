@@ -1,11 +1,11 @@
-﻿using MarketPlace.Shared;
+﻿using MarketPlace.Domain.Common;
+using MarketPlace.Shared;
 using System;
 
 namespace MarketPlace.Domain
 {
-    public class CartItem
+    public class CartItem : BaseEntity
     {
-        public Guid Id { get; private set; } = Guid.NewGuid();
         public Guid UserId { get; private set; }
         public Guid ProductId { get; private set; }
         public int Quantity { get; private set; }

@@ -5,18 +5,17 @@ namespace MarketPlace.Domain.UnitTest
     public class UserTests
     {
         private const string USERNAME = "testuser";
-        private const string USEREMAIL = "testuser@test.com";
-        private const string PASSWORD = "hashedpassword";
+        private const string Id = "ef5d1b6e-ab0f-4b64-8f94-eb92e584c9a8";
+        private const string EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
 
         [Theory]
-        [InlineData(USERNAME, USEREMAIL, PASSWORD, true, "")]
-        [InlineData("  ", USEREMAIL, PASSWORD, false, ErrorMessages.INVALID_USER_NAME)]
-        [InlineData(USERNAME, "  ", PASSWORD, false, ErrorMessages.INVALID_USER_EMAIL)]
-        [InlineData(USERNAME, USEREMAIL, "  ", false, ErrorMessages.INVALID_USER_PASSWORD)]
-        public void Create_ShouldReturnExpectedResult(string name, string email, string passwordHash, bool expectedSuccess, string expectedMessage)
+        [InlineData(USERNAME, Id, true, "")]
+        [InlineData("  ", Id, false, ErrorMessages.INVALID_USER_NAME)]
+        [InlineData(USERNAME, EMPTY_GUID, false, ErrorMessages.INVALID_USER_ID)]
+        public void Create_ShouldReturnExpectedResult(string name, string id, bool expectedSuccess, string expectedMessage)
         {
             // Act
-            var result = User.Create(name, email, passwordHash);
+            var result = User.Create(new Guid(id), name);
             // Assert
             Assert.Equal(expectedSuccess, result.Success);
             Assert.Equal(expectedMessage, result.Message);
@@ -24,9 +23,7 @@ namespace MarketPlace.Domain.UnitTest
             {
                 Assert.NotNull(result.Data);
                 Assert.Equal(name, result.Data!.Name);
-                Assert.Equal(email, result.Data!.Email);
-                Assert.Equal(passwordHash, result.Data!.PasswordHash);
-                Assert.Equal(User.UserRole.Buyer, result.Data!.Role);
+                Assert.Equal(id, result.Data!.Id.ToString());
             }
             else
             {
