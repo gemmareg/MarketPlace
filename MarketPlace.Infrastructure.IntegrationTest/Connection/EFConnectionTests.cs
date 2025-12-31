@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MarketPlace.Infrastructure.IntegrationTest.Connection;
 
-public class EFConnectionTests
+public class EFConnectionTests : IClassFixture<DatabaseFixture>
 {
     private readonly DatabaseFixture _fixture;
     private readonly User _user;
 
-    public EFConnectionTests()
+    public EFConnectionTests(DatabaseFixture fixture)
     {
-        _fixture = new DatabaseFixture();
+        _fixture = fixture;
         _user = User.Create(Guid.NewGuid(), "John Doe").Data!;
 
     }
@@ -28,6 +28,7 @@ public class EFConnectionTests
     {
         // Act
         _fixture.DbContext.Users.Add(_user);
+        await _fixture.DbContext.SaveChangesAsync();
 
         // Assert
         var usersCount = await _fixture.DbContext.Users.CountAsync();
@@ -56,6 +57,6 @@ public class EFConnectionTests
 
         // Assert
         var productsCount = await _fixture.DbContext.Products.CountAsync();
-        Assert.Equal(1, productsCount); 
+        Assert.Equal(1, productsCount);
     }
 }

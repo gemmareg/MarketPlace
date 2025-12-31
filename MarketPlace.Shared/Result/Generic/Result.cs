@@ -1,13 +1,12 @@
-﻿
-namespace MarketPlace.Shared
+﻿namespace MarketPlace.Shared.Result.Generic
 {
-    public class Result<T>
+    public class Result<T> : NonGeneric.Result
     {
         public bool Success { get; private set; }
         public string Message { get; private set; }
         public T? Data { get; private set; }
 
-        private Result(bool success, string message, T? data)
+        private Result(bool success, string message, T? data) : base(success, message)
         {
             Success = success;
             Message = message;
