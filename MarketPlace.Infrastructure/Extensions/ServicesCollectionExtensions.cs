@@ -1,8 +1,10 @@
 ﻿using MarketPlace.Application.Abstractions.Repositories;
 using MarketPlace.Application.Abstractions.Repositories.Common;
+using MarketPlace.Application.Abstractions.UnitOfWork;
 using MarketPlace.Infrastructure.Persistance.Context;
 using MarketPlace.Infrastructure.Persistance.Repositories;
 using MarketPlace.Infrastructure.Persistance.Repositories.Common;
+using MarketPlace.Infrastructure.Persistance.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,7 @@ namespace MarketPlace.Infrastructure.Extensions
             );
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<ICartItemRepository, CartItemRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
