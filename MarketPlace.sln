@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Application", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Api", "MarketPlace.Api\MarketPlace.Api.csproj", "{89A9BF61-2DA5-2CBB-4E43-820AB87610F0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Application.UnitTest", "MarketPlace.Application.UnitTest\MarketPlace.Application.UnitTest.csproj", "{5BC7209E-8F76-4FB7-A6D2-5853CF54D222}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{89A9BF61-2DA5-2CBB-4E43-820AB87610F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89A9BF61-2DA5-2CBB-4E43-820AB87610F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89A9BF61-2DA5-2CBB-4E43-820AB87610F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BC7209E-8F76-4FB7-A6D2-5853CF54D222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BC7209E-8F76-4FB7-A6D2-5853CF54D222}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BC7209E-8F76-4FB7-A6D2-5853CF54D222}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BC7209E-8F76-4FB7-A6D2-5853CF54D222}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{A24E244C-AAB1-4BBA-9DA5-82C978318072} = {6DC90A7A-EAC6-47E6-B849-C72685164243}
 		{868A62E5-D79F-3E0F-CEB8-2F5C0BB99E76} = {DF6ACC4A-E6FA-4D53-B5C0-49AE6ED03E20}
 		{89A9BF61-2DA5-2CBB-4E43-820AB87610F0} = {5A8D36FA-83A0-4AB4-AC96-57F13A2B188E}
+		{5BC7209E-8F76-4FB7-A6D2-5853CF54D222} = {6DC90A7A-EAC6-47E6-B849-C72685164243}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B46F66F7-A96B-414F-ADD3-1026357562E5}
