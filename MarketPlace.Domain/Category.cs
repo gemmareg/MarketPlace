@@ -1,6 +1,7 @@
 ﻿using MarketPlace.Domain.Common;
 using MarketPlace.Shared;
 using MarketPlace.Shared.Result.Generic;
+using MarketPlace.Shared.Result.NonGeneric;
 using System;
 using System.Collections.Generic;
 
@@ -26,6 +27,22 @@ namespace MarketPlace.Domain
             category.Description = description;
             
             return Result<Category>.Ok(category);
+        }
+
+        public Result SetName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return Result.Fail(ErrorMessages.INVALID_CATEGORY_NAME);
+            Name = name;
+            return Result.Ok();
+        }
+
+        public Result SetDescription(string description)
+        {
+            if(description == null)
+                return Result.Fail(description);
+            Description = description;
+            return Result.Ok();
         }
     }    
 }

@@ -22,11 +22,12 @@
             Paid,
             Sent,
             Delivered,
-            Canceled
+            Cancelled
         }
 
-        public enum PaymentMethods
+        public enum PaymentMethod
         {
+            Undefined,
             CreditCard,
             DebitCard,
             PayPal,
