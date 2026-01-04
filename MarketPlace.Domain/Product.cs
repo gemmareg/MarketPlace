@@ -84,5 +84,61 @@ namespace MarketPlace.Domain
 
             return Result<Product>.Ok(product);
         }
+
+        public Result<Product> UpdatePrice(decimal newPrice)
+        {
+            if (newPrice < 0)
+                return Result<Product>.Fail(ErrorMessages.INVALID_PRODUCT_PRICE);
+
+            Price = newPrice;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> UpdateStock(int newStock)
+        {
+            if (newStock < 0)
+                return Result<Product>.Fail(ErrorMessages.INVALID_PRODUCT_STOCK);
+
+            Stock = newStock;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> Activate()
+        {
+            State = ProductState.Active;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> Deactivate()
+        {
+            State = ProductState.Inactive;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> UpdateName(string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+                return Result<Product>.Fail(ErrorMessages.INVALID_PRODUCT_NAME);
+
+            Name = newName;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> UpdateDescription(string newDescription)
+        {
+            Description = newDescription ?? string.Empty;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> ChangeCategory(Category newCategory)
+        {
+            if (newCategory is null)
+                return Result<Product>.Fail(ErrorMessages.INVALID_CATEGORY_FOR_PRODUCT);
+
+            CategoryId = newCategory.Id;
+            Category = newCategory;
+
+            return Result<Product>.Ok(this);
+        }
     }
 }

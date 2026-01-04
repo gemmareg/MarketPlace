@@ -1,6 +1,4 @@
 ﻿using MarketPlace.Domain.Common;
-using MarketPlace.Shared;
-using MarketPlace.Shared.Result.Generic;
 using System;
 
 namespace MarketPlace.Domain
@@ -15,26 +13,13 @@ namespace MarketPlace.Domain
         public int Quantity { get; private set; }
         public decimal UnitPrice { get; private set; }
 
-        private OrderItem() { }
-
-        public static Result<OrderItem> Create(CartItem cartItem, Order order)
+        internal OrderItem(Guid orderId, Guid productId, int quantity, decimal unitPrice)
         {
-            if (order == null)
-                return Result<OrderItem>.Fail(ErrorMessages.INVALID_ORDER_FOR_ORDER_ITEM);
+            OrderId = orderId;
 
-            if (cartItem == null)
-                return Result<OrderItem>.Fail(ErrorMessages.INVALID_CART_ITEM_FOR_ORDER_ITEM);
-
-            var orderItem = new OrderItem();          
-                        
-            orderItem.Order = order;
-            orderItem.OrderId = order.Id;
-            
-            orderItem.ProductId = cartItem.ProductId;
-            orderItem.Quantity = cartItem.Quantity;
-            orderItem.UnitPrice = cartItem.Product?.Price ?? 0m;
-
-            return Result<OrderItem>.Ok(orderItem);
+            ProductId = productId;
+            Quantity = quantity;
+            UnitPrice = unitPrice;
         }
     }
 }

@@ -99,7 +99,7 @@ namespace MarketPlace.Infrastructure.Persistance.Context
 
             // Order <-> Payment (one-to-one). Payment.PedidoId is FK
             modelBuilder.Entity<Order>()
-                .HasOne(o => o.Pago)
+                .HasOne(o => o.Payment)
                 .WithOne(p => p.Order)
                 .HasForeignKey<Payment>(p => p.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);

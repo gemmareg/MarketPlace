@@ -15,9 +15,12 @@
         public const string EMPTY_CART_ITEMS = "La lista del carrito no puede estar vacía.";
         public const string ERROR_CREATING_ORDER_ITEM = "Error al crear OrderItem desde CartItem.";
         public const string ORDER_CANNOT_BE_PAID = "La orden ya ha sido pagada.";
+        public const string ORDER_CANNOT_BE_SHIPPED = "La orden no puede ser enviada sin estar pagada";
+        public const string ORDER_CANNOT_BE_DELIVERED = "La orden no puede entregarse si no ha sido enviada";
+        public const string ORDER_CANNOT_BE_CANCELLED = "La orden no puede cancelarse si ya ha sido enviada";
+        public const string ORDER_ALREADY_CANCELLED = "La orden ya ha sido cancelada.";
 
         // OrderItem errors
-        public const string INVALID_ORDER_FOR_ORDER_ITEM = "El pedido no puede ser nulo";
         public const string INVALID_CART_ITEM_FOR_ORDER_ITEM = "El item del carrito no puede ser nulo.";
 
         // Product errors
@@ -38,7 +41,9 @@
 
         // Payment errors
         public const string INVALID_ORDER_FOR_PAYMENT = "El pedido no puede ser nulo para crear un pago.";
+        public const string PAYMENT_NOT_CREATED_YET = "El pago aún no ha sido creado para esta orden.";
         public const string INVALID_PAYMENT_AMOUNT = "El monto del pago no puede ser negativo.";
         public const string INVALID_PAYMENT_METHOD = "El método de pago no es válido.";
+        public const string PAYMENT_ALREADY_EXISTS = "El pago ya existe para esta orden.";
     }
 }
