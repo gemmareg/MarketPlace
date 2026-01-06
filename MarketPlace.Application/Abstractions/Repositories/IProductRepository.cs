@@ -5,5 +5,7 @@ namespace MarketPlace.Application.Abstractions.Repositories
 {
     public interface IProductRepository : IRepository<Product>
     {
+        Task<List<Product>> GetProductsByNameAsync(string name);
+        Task<List<Product>> GetProductsByCategoryIdAsync(Guid categoryId);
     }
 }
