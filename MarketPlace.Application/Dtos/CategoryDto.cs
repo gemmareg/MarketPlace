@@ -1,6 +1,6 @@
-﻿namespace MarketPlace.Application.Features.Categories.Queries.GetCategoryList
+﻿namespace MarketPlace.Application.Dtos
 {
-    public class CategoryListDto
+    public class CategoryDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
