@@ -7,35 +7,92 @@ namespace MarketPlace.Domain.UnitTest
     {
         private readonly Category _category;
         private readonly User _seller;
-        private readonly string _name;
-        private readonly string _description;
-        public ProductTests()
-        {
-            //TODO: finish the constructor with the necessary data
-            _category = Category.Create("Lorem", "Ipsum").Data!;
-            _seller = User.Create(Guid.NewGuid(), "Lorem User").Data!;
-
-
-
-            _name = "Cacahuetes Tostados Naturales – 1 kg";
-            _description = @"Cacahuetes tostados de alta calidad, seleccionados y tostados de forma uniforme para ofrecer un sabor natural y una textura crujiente. Sin sal añadida ni conservantes, ideales para quienes buscan un snack sencillo y versátil.
+        private const string TEST_NAME = "Cacahuetes Tostados Naturales – 1 kg";
+        private const string TEST_DESCRIPTION = @"Cacahuetes tostados de alta calidad, seleccionados y tostados de forma uniforme para ofrecer un sabor natural y una textura crujiente. Sin sal añadida ni conservantes, ideales para quienes buscan un snack sencillo y versátil.
 
 Aptos para consumir solos o como ingrediente en ensaladas, platos salteados, repostería o para preparar mantequilla de cacahuete casera. Presentados en bolsa resellable para conservar mejor su frescura.
 
 Un básico práctico y sabroso para el día a día.";
+        public ProductTests()
+        {
+            _category = Category.Create("Category A", "Category's description").Data!;
+            _seller = User.Create(Guid.NewGuid(), "User A").Data!;
+        }
+
+        [Fact]
+        public void CreateShouldReturnInvalidCategory()
+        {
+            //Arrange
+            DateTime date = DateTime.Today;
+
+            //Act
+            var result = Product.Create(null, _seller, TEST_NAME, TEST_DESCRIPTION, 10.0m, 100, date, Product.ProductState.Active);
+
+            //Assert
+            Assert.False(result.Success);
+            Assert.Equal(ErrorMessages.INVALID_CATEGORY_FOR_PRODUCT, result.Message);
+            Assert.Null(result.Data);
+            return;
+        }
+
+        [Fact]
+        public void CreateShouldReturnInvalidSeller()
+        {
+            //Arrange
+            DateTime date = DateTime.Today;
+
+            //Act
+            var result = Product.Create(_category, null, TEST_NAME, TEST_DESCRIPTION, 10.0m, 100, date, Product.ProductState.Active);
+
+            //Assert
+            Assert.False(result.Success);
+            Assert.Equal(ErrorMessages.INVALID_SELLER_FOR_PRODUCT, result.Message);
+            Assert.Null(result.Data);
+            return;
         }
 
         [Theory]
-        [InlineData(10.0, 100, Product.ProductState.Active)]
+        [InlineData(TEST_NAME, TEST_DESCRIPTION, 10.0, 100, -1, Product.ProductState.Active, true, "")]
+        [InlineData(null, TEST_DESCRIPTION, 10.0, 100, -1, Product.ProductState.Active, false, ErrorMessages.INVALID_PRODUCT_NAME)]
+        [InlineData(TEST_NAME, TEST_DESCRIPTION, -20.0, 100, -1, Product.ProductState.Active, false, ErrorMessages.INVALID_PRODUCT_PRICE)]
+        [InlineData(TEST_NAME, TEST_DESCRIPTION, 10.0, -99, -1, Product.ProductState.Active, false, ErrorMessages.INVALID_PRODUCT_STOCK)]
         public void CreateShouldReturnExpectedResult(
+            string name,
+            string description,
             decimal price,
             int stock,
-            Product.ProductState state)
+            int daysToAddToToday,
+            Product.ProductState state,
+            bool expectedResult,
+            string expectedMessage)
         {
-            //TODO: implement the method to run the tests
+            //Arrange
+            DateTime date = DateTime.Today.AddDays(daysToAddToToday);
 
             //Act
-            var product = Product.Create(_category, _seller, _name, _description, price, stock, DateTime.Today.AddDays(-1), state);
+            var result = Product.Create(_category, _seller, name, description, price, stock, date, state);
+
+            //Assert
+            if (!expectedResult)
+            {
+                Assert.False(result.Success);
+                Assert.Equal(expectedMessage, result.Message);
+                Assert.Null(result.Data);
+                return;
+            }
+            else
+            {
+                Assert.True(result.Success);
+                Assert.NotNull(result.Data);
+                Assert.Equal(_category.Id, result.Data!.CategoryId);
+                Assert.Equal(_seller.Id, result.Data!.SellerId);
+                Assert.Equal(name, result.Data.Name);
+                Assert.Equal(description, result.Data.Description);
+                Assert.Equal(price, result.Data.Price);
+                Assert.Equal(stock, result.Data.Stock);
+                Assert.Equal(date, result.Data.DateCreated);
+                Assert.Equal(state, result.Data.State);
+            }
         }
     }
 }
