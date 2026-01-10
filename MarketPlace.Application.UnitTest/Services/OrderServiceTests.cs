@@ -7,6 +7,7 @@ using MarketPlace.Application.Services;
 using MarketPlace.Domain;
 using Moq;
 using static MarketPlace.Domain.Product;
+using static MarketPlace.Shared.Enums;
 
 namespace MarketPlace.Application.UnitTest.Services;
 

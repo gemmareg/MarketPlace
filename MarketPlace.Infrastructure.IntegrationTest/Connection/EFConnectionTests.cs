@@ -1,6 +1,7 @@
 ﻿using MarketPlace.Domain;
 using MarketPlace.Infrastructure.IntegrationTest.Fixtures;
 using Microsoft.EntityFrameworkCore;
+using static MarketPlace.Shared.Enums;
 
 namespace MarketPlace.Infrastructure.IntegrationTest.Connection;
 
@@ -49,7 +50,7 @@ public class EFConnectionTests : IClassFixture<DatabaseFixture>
             price: 9.99m, 
             stock: 100, 
             dateCreated: DateTime.UtcNow, 
-            state: Product.ProductState.Active).Data!;
+            state: ProductState.Active).Data!;
 
         // Act
         _fixture.DbContext.Products.Add(product); 

@@ -18,7 +18,7 @@ namespace MarketPlace.Domain
 
         // Relaciones
         public ICollection<OrderItem> OrderItems { get; set; }
-        public Payment? Payment { get; private set; }
+        public Payment Payment { get; private set; }
 
         private Order() { }
 

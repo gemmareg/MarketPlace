@@ -35,7 +35,7 @@ namespace MarketPlace.Infrastructure.IntegrationTest.Repositories
                 price: 9.99m,
                 stock: 100,
                 dateCreated: DateTime.UtcNow,
-                state: Product.ProductState.Active).Data!;
+                state: ProductState.Active).Data!;
 
             _fixture.DbContext.Categories.Add(_category);
             _fixture.DbContext.Users.Add(_user);

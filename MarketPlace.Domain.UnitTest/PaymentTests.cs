@@ -26,7 +26,7 @@ namespace MarketPlace.Domain.UnitTest
                 price: 9.99m,
                 stock: 100,
                 dateCreated: DateTime.UtcNow,
-                state: Product.ProductState.Active).Data!;
+                state: ProductState.Active).Data!;
             _cartItems = new List<CartItem>(){
                 CartItem.Create(_user.Id, _product.Id, 2).Data!,
             };
