@@ -5,5 +5,6 @@ namespace MarketPlace.Application.Abstractions.Repositories
 {
     public interface ICartItemRepository : IRepository<CartItem>
     {
+        Task<List<CartItem>> GetCartItemsByUserId(Guid userId);
     }
 }

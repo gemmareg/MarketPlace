@@ -25,7 +25,7 @@ namespace MarketPlace.Domain
 
         public ICollection<OrderItem>? Products { get; set; }
         public ICollection<Review>? Reviews { get; set; }
-        public ICollection<CartItem>? InCart { get; set; }     
+        public ICollection<CartItem>? InCart { get; set; }
 
         private Product() { }
 
