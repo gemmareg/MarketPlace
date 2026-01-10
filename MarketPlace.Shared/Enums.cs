@@ -33,5 +33,12 @@
             PayPal,
             BankTransfer
         }
+
+        public enum ProductState
+        {
+            Active,
+            Inactive,
+            SoldOut
+        }
     }
 }
