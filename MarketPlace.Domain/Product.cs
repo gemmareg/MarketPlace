@@ -140,5 +140,19 @@ namespace MarketPlace.Domain
 
             return Result<Product>.Ok(this);
         }
+
+        public void DeductStock(int quantity)
+        {
+            if (Stock < quantity)
+                throw new InvalidOperationException(ErrorMessages.NOT_ENOUGHT_STOCK);
+            Stock -= quantity;
+        }
+
+        public void ReplenishStock(int quantity)
+        {
+            Stock += quantity;
+        }
+
+        public bool HasEnoughStock(int quantity) => Stock >= quantity;
     }
 }

@@ -2,6 +2,7 @@
 using MarketPlace.Domain;
 using MarketPlace.Infrastructure.Persistance.Context;
 using MarketPlace.Infrastructure.Persistance.Repositories.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarketPlace.Infrastructure.Persistance.Repositories
 {
@@ -10,5 +11,7 @@ namespace MarketPlace.Infrastructure.Persistance.Repositories
         public CartItemRepository(MarketPlaceDbContext context) : base(context)
         {
         }
+
+        public async Task<List<CartItem>> GetByIdsAsync(List<Guid> ids) => await _dbSet.Where(c => ids.Contains(c.Id)).ToListAsync();
     }
 }
