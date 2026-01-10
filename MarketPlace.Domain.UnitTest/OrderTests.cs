@@ -152,7 +152,7 @@ namespace MarketPlace.Domain.UnitTest
                 10m,
                 10,
                 DateTime.UtcNow,
-                Product.ProductState.Active).Data!;
+                ProductState.Active).Data!;
 
             var cartItem = CartItem.Create(user.Id, product.Id, 2).Data!;
             var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;

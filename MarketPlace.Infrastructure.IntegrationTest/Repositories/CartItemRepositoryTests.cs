@@ -3,6 +3,7 @@ using MarketPlace.Application.Abstractions.Repositories;
 using MarketPlace.Domain;
 using MarketPlace.Infrastructure.IntegrationTest.Fixtures;
 using MarketPlace.Infrastructure.Persistance.Repositories;
+using static MarketPlace.Shared.Enums;
 
 namespace MarketPlace.Infrastructure.IntegrationTest.Repositories
 {
@@ -35,7 +36,7 @@ namespace MarketPlace.Infrastructure.IntegrationTest.Repositories
                 price: 9.99m,
                 stock: 100,
                 dateCreated: DateTime.UtcNow,
-                state: Product.ProductState.Active).Data!;
+                state: ProductState.Active).Data!;
             _cartItem = CartItem.Create(
                 userId: _user.Id,
                 productId: _product.Id,

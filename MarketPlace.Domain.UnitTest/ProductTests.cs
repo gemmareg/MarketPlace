@@ -1,5 +1,6 @@
 ﻿using MarketPlace.Domain;
 using MarketPlace.Shared;
+using static MarketPlace.Shared.Enums;
 
 public class ProductTests
 {
@@ -24,20 +25,20 @@ public class ProductTests
             1000m,
             5,
             DateTime.UtcNow,
-            Product.ProductState.Inactive);
+            ProductState.Inactive);
 
         // Assert
         Assert.True(result.Success);
         Assert.NotNull(result.Data);
         Assert.Equal("Laptop", result.Data!.Name);
-        Assert.Equal(Product.ProductState.Inactive, result.Data.State);
+        Assert.Equal(ProductState.Inactive, result.Data.State);
     }
 
     [Fact]
     public void UpdateName_Should_Change_Name_When_Valid()
     {
         // Arrange
-        var product = Product.Create(_category, _seller, "OldName", "Desc", 10m, 1, DateTime.UtcNow, Product.ProductState.Active).Data!;
+        var product = Product.Create(_category, _seller, "OldName", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
         var newProductName = "NewName";
 
         // Act
@@ -52,7 +53,7 @@ public class ProductTests
     public void UpdateName_Should_Fail_When_Empty()
     {
         // Arrange
-        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, Product.ProductState.Active).Data!;
+        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
 
         // Act
         var result = product.UpdateName("");
@@ -66,7 +67,7 @@ public class ProductTests
     public void UpdateDescription_Should_Change_Description()
     {
         // Arrange
-        var product = Product.Create(_category, _seller, "Laptop", "OldDesc", 10m, 1, DateTime.UtcNow, Product.ProductState.Active).Data!;
+        var product = Product.Create(_category, _seller, "Laptop", "OldDesc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
 
         // Act
         var result = product.UpdateDescription("NewDesc");
@@ -80,7 +81,7 @@ public class ProductTests
     public void UpdatePrice_Should_Change_Price_When_Valid()
     {
         // Arrange
-        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, Product.ProductState.Active).Data!;
+        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
 
         // Act
         var result = product.UpdatePrice(20m);
@@ -94,7 +95,7 @@ public class ProductTests
     public void UpdatePrice_Should_Fail_When_Negative()
     {
         // Arrange
-        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, Product.ProductState.Active).Data!;
+        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
 
         // Act
         var result = product.UpdatePrice(-5m);
@@ -108,7 +109,7 @@ public class ProductTests
     public void ChangeCategory_Should_Update_Category_When_Valid()
     {
         // Arrange
-        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, Product.ProductState.Active).Data!;
+        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
         var newCategory = Category.Create("Informática", "PC y accesorios").Data!;
 
         // Act
@@ -124,13 +125,13 @@ public class ProductTests
     public void Activate_And_Deactivate_Should_Change_State()
     {
         // Arrange
-        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, Product.ProductState.Inactive).Data!;
+        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Inactive).Data!;
 
         // Act & Assert
         product.Activate();
-        Assert.Equal(Product.ProductState.Active, product.State);
+        Assert.Equal(ProductState.Active, product.State);
 
         product.Deactivate();
-        Assert.Equal(Product.ProductState.Inactive, product.State);
+        Assert.Equal(ProductState.Inactive, product.State);
     }
 }
