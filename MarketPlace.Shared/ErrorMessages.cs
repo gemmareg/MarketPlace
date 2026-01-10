@@ -29,6 +29,7 @@
         public const string INVALID_PRODUCT_NAME = "El nombre del producto no puede estar vacío.";
         public const string INVALID_PRODUCT_PRICE = "El precio del producto no puede ser negativo.";
         public const string INVALID_PRODUCT_STOCK = "El stock del producto no puede ser negativo.";
+        public const string NOT_ENOUGHT_STOCK = "No hay stock suficiente";
 
         // Review errors
         public const string INVALID_USER_FOR_REVIEW = "La reseña debe estar asociada a un usuario.";

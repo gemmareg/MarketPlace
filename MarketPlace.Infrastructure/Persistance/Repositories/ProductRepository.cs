@@ -12,6 +12,11 @@ namespace MarketPlace.Infrastructure.Persistance.Repositories
         {
         }
 
+        public async Task<IEnumerable<Product>> GetProductsByIdsAsync(List<Guid> Ids)
+        {
+            return await _dbSet.Where(p => Ids.Contains(p.Id)).ToListAsync();
+        }
+
         public async Task<List<Product>> GetProductsByNameAsync(string name)
         {
             return await _dbSet.Where(p => p.Name.Contains(name)).ToListAsync();

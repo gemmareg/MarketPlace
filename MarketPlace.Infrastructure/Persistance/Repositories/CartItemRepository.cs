@@ -12,6 +12,8 @@ namespace MarketPlace.Infrastructure.Persistance.Repositories
         {
         }
 
+        public async Task<List<CartItem>> GetByIdsAsync(List<Guid> ids) => await _dbSet.Where(c => ids.Contains(c.Id)).ToListAsync();
+
         public async Task<List<CartItem>> GetCartItemsByUserId(Guid userId) => await _context.Set<CartItem>().Where(ci => ci.UserId == userId).ToListAsync();
     }
 }

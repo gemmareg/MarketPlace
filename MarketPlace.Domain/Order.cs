@@ -13,7 +13,6 @@ namespace MarketPlace.Domain
         public Guid UserId { get; private set; }
         public User User { get; private set; }
 
-        public DateTime OrderDate { get; private set; } = DateTime.UtcNow;
         public decimal Total { get; private set; }
         public OrderStatus Status { get; private set; } = OrderStatus.Pending;
 
