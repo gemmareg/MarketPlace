@@ -3,6 +3,7 @@ using MarketPlace.Shared;
 using MarketPlace.Shared.Result.Generic;
 using System;
 using System.Collections.Generic;
+using static MarketPlace.Shared.Enums;
 
 namespace MarketPlace.Domain
 {
@@ -24,14 +25,7 @@ namespace MarketPlace.Domain
 
         public ICollection<OrderItem>? Products { get; set; }
         public ICollection<Review>? Reviews { get; set; }
-        public ICollection<CartItem>? InCart { get; set; }
-
-        public enum ProductState
-        {
-            Active,
-            Inactive,
-            SoldOut
-        }
+        public ICollection<CartItem>? InCart { get; set; }     
 
         private Product() { }
 
