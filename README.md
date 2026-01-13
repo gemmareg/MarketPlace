@@ -75,6 +75,7 @@ El proyecto prioriza la verificación del comportamiento, no solo la cobertura.
 - Reglas de creación
 - Restricciones
 - Comportamiento ante estados inválidos.
+
 **Aplicación**
 - Casos de uso
 - Flujo correcto de operaciones
