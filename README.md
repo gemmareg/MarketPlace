@@ -1,4 +1,4 @@
-## MarketPlace API - .NET 8
+# MarketPlace API - .NET 8
 
 Proyecto orientado a demostrar un diseño de software empresarial en .NET 8, aplicando Domain-Driven Design (DDD), separación estricta de responsabilidades y foco en la protección de las reglas de negocio.
 
@@ -33,7 +33,7 @@ Capa de exposición (en desarrollo), responsable únicamente de entrada/salida.
 ## Dominio y reglas de negocio
 El dominio está diseñado para proteger las invariantes de negocio por diseño, no solo mediante validaciones superficiales.
 
-# Principios aplicados
+## Principios aplicados
 1. Entidades con constructores privados o internal
 2. Creación exclusiva mediante métodos factory estáticos
 3. Sin setters públicos
@@ -41,7 +41,7 @@ El dominio está diseñado para proteger las invariantes de negocio por diseño,
 5. Uso de Result<T> para representar explícitamente éxito o error
 6. El dominio no expone estados inválidos posibles
 
-# Agregados
+## Agregados
 Ejemplo clave: Order como Aggregate Root
 1. OrderItem y Payment no pueden existir fuera de una Order
 2. Al crear una Order:
@@ -102,7 +102,7 @@ a arquitectura base y el dominio están **completamente definidos y funcionales*
 
 Algunas partes se encuentran en desarrollo activo como parte de una **estrategia evolutiva**, similar a un producto real.
 
-# Roadmap
+## Roadmap
 
 - ✔️ Diseño y construcción del dominio (DDD)
 - ✔️ Infraestructura y persistencia
