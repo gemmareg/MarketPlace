@@ -43,34 +43,34 @@ El dominio está diseñado para proteger las invariantes de negocio por diseño,
 
 ## Agregados
 Ejemplo clave: Order como Aggregate Root
-1. OrderItem y Payment no pueden existir fuera de una Order
-2. Al crear una Order:
+- OrderItem y Payment no pueden existir fuera de una Order
+- Al crear una Order:
   - Se crean automáticamente los OrderItems
   - Se crea el Payment
-3. No existe ninguna forma válida de:
+- No existe ninguna forma válida de:
   - Crear un Payment aislado
   - Crear un OrderItem fuera de una Order
-4. Estas restricciones están:
+- Estas restricciones están:
   - Reforzadas por el diseño
   - Cubiertas por tests unitarios
   - Imposibles de romper desde capas superiores
 
 ## CQRS y capa de aplicación
 La capa de aplicación implementa los casos de uso del sistema mediante:
-1. CQRS
+- CQRS
   - Commands / Queries separados
   - Handlers independientes
-2. Interfaces de repositorios y Unit of Work
-3. Servicios de aplicación cuando la lógica:
+- Interfaces de repositorios y Unit of Work
+- Servicios de aplicación cuando la lógica:
   - Es extensa
   - No pertenece al dominio puro
-4. Orquestación clara sin duplicar reglas de negocio
+- Orquestación clara sin duplicar reglas de negocio
 
 La aplicación no contiene lógica de persistencia ni dependencias técnicas.
 
 ## Testing y calidad
 El proyecto prioriza la verificación del comportamiento, no solo la cobertura.
-# Tests unitarios
+### Tests unitarios
 **Dominio**
 - Reglas de creación
 - Restricciones
@@ -79,7 +79,8 @@ El proyecto prioriza la verificación del comportamiento, no solo la cobertura.
 **Aplicación**
 - Casos de uso
 - Flujo correcto de operaciones
-# Tests de integración
+
+### Tests de integración
 - Persistencia real con Entity framework core
 - Validación de:
   - Configuración de DbContext.
