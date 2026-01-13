@@ -84,7 +84,7 @@ Un básico práctico y sabroso para el día a día.";
             Assert.Equal(description, result.Data.Description);
             Assert.Equal(price, result.Data.Price);
             Assert.Equal(stock, result.Data.Stock);
-            Assert.Equal(date, result.Data.DateCreated);
+            Assert.Equal(date, result.Data.CreatedDate);
             Assert.Equal(state, result.Data.State);
         }
     }

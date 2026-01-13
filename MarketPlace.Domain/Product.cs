@@ -15,7 +15,6 @@ namespace MarketPlace.Domain
         public string Description { get; private set; } = string.Empty;
         public decimal Price { get; private set; }
         public int Stock { get; private set; }
-        public DateTime DateCreated { get; private set; } = DateTime.UtcNow;
         public ProductState State { get; private set; } = ProductState.Inactive;
 
         // Relaciones
@@ -71,7 +70,7 @@ namespace MarketPlace.Domain
                 Description = description,
                 Price = price,
                 Stock = stock,
-                DateCreated = dateCreated,
+                CreatedDate = dateCreated,
                 State = state,
 
                 Category = category,
