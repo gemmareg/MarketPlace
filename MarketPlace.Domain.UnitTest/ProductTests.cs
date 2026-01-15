@@ -1,6 +1,7 @@
-﻿using MarketPlace.Shared;
+﻿
+using MarketPlace.Domain;
+using MarketPlace.Shared;
 using static MarketPlace.Shared.Enums;
-
 namespace MarketPlace.Domain.UnitTest;
 
 public class ProductTests
@@ -15,8 +16,8 @@ Aptos para consumir solos o como ingrediente en ensaladas, platos salteados, rep
 Un básico práctico y sabroso para el día a día.";
     public ProductTests()
     {
-        _category = Category.Create("Category A", "Category's description").Data!;
-        _seller = User.Create(Guid.NewGuid(), "User A").Data!;
+        _category = Category.Create("Electrónica", "Dispositivos electrónicos").Data!;
+        _seller = User.Create(Guid.NewGuid(), "John Doe").Data!;
     }
 
     [Fact]
@@ -26,7 +27,7 @@ Un básico práctico y sabroso para el día a día.";
         DateTime date = DateTime.Today;
 
         //Act
-        var result = Product.Create(null, _seller, TEST_NAME, TEST_DESCRIPTION, 10.0m, 100, date, Product.ProductState.Active);
+        var result = Product.Create(null, _seller, TEST_NAME, TEST_DESCRIPTION, 10.0m, 100, date, ProductState.Active);
 
         //Assert
         Assert.False(result.Success);
@@ -41,7 +42,7 @@ Un básico práctico y sabroso para el día a día.";
         DateTime date = DateTime.Today;
 
         //Act
-        var result = Product.Create(_category, null, TEST_NAME, TEST_DESCRIPTION, 10.0m, 100, date, Product.ProductState.Active);
+        var result = Product.Create(_category, null, TEST_NAME, TEST_DESCRIPTION, 10.0m, 100, date, ProductState.Active);
 
         //Assert
         Assert.False(result.Success);
@@ -57,7 +58,7 @@ Un básico práctico y sabroso para el día a día.";
         decimal price,
         int stock,
         int daysToAddToToday,
-        Product.ProductState state,
+        ProductState state,
         bool expectedResult,
         string expectedMessage)
     {
@@ -92,12 +93,133 @@ Un básico práctico y sabroso para el día a día.";
     public static IEnumerable<object[]> CreateProductCases => new[]
     {
         // Success case
-        new object[] {  TEST_NAME, TEST_DESCRIPTION, 10.0m, 100, -1, Product.ProductState.Active, true, string.Empty },
+        new object[] {  TEST_NAME, TEST_DESCRIPTION, 10.0m, 100, -1, ProductState.Active, true, string.Empty },
 
         // Validation failures
-        [null, TEST_DESCRIPTION, 10.0, 100, -1, Product.ProductState.Active, false, ErrorMessages.INVALID_PRODUCT_NAME],
-        [TEST_NAME, TEST_DESCRIPTION, -20.0, 100, -1, Product.ProductState.Active, false, ErrorMessages.INVALID_PRODUCT_PRICE ],
-        [TEST_NAME, TEST_DESCRIPTION, 10.0, -99, -1, Product.ProductState.Active, false, ErrorMessages.INVALID_PRODUCT_STOCK],
+        [null, TEST_DESCRIPTION, 10.0, 100, -1, ProductState.Active, false, ErrorMessages.INVALID_PRODUCT_NAME],
+        [TEST_NAME, TEST_DESCRIPTION, -20.0, 100, -1, ProductState.Active, false, ErrorMessages.INVALID_PRODUCT_PRICE ],
+        [TEST_NAME, TEST_DESCRIPTION, 10.0, -99, -1, ProductState.Active, false, ErrorMessages.INVALID_PRODUCT_STOCK],
     };
-}
 
+    [Fact]
+    public void Should_Create_Product_Successfully()
+    {
+        // Act
+        var result = Product.Create(
+            _category,
+            _seller,
+            "Laptop",
+            "Laptop para testing",
+            1000m,
+            5,
+            DateTime.UtcNow,
+            ProductState.Inactive);
+
+        // Assert
+        Assert.True(result.Success);
+        Assert.NotNull(result.Data);
+        Assert.Equal("Laptop", result.Data!.Name);
+        Assert.Equal(ProductState.Inactive, result.Data.State);
+    }
+
+    [Fact]
+    public void UpdateName_Should_Change_Name_When_Valid()
+    {
+        // Arrange
+        var product = Product.Create(_category, _seller, "OldName", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
+        var newProductName = "NewName";
+
+        // Act
+        var result = product.UpdateName(newProductName);
+
+        // Assert
+        Assert.True(result.Success);
+        Assert.Equal(newProductName, product.Name);
+    }
+
+    [Fact]
+    public void UpdateName_Should_Fail_When_Empty()
+    {
+        // Arrange
+        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
+
+        // Act
+        var result = product.UpdateName("");
+
+        // Assert
+        Assert.False(result.Success);
+        Assert.Equal(ErrorMessages.INVALID_PRODUCT_NAME, result.Message);
+    }
+
+    [Fact]
+    public void UpdateDescription_Should_Change_Description()
+    {
+        // Arrange
+        var product = Product.Create(_category, _seller, "Laptop", "OldDesc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
+
+        // Act
+        var result = product.UpdateDescription("NewDesc");
+
+        // Assert
+        Assert.True(result.Success);
+        Assert.Equal("NewDesc", product.Description);
+    }
+
+    [Fact]
+    public void UpdatePrice_Should_Change_Price_When_Valid()
+    {
+        // Arrange
+        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
+
+        // Act
+        var result = product.UpdatePrice(20m);
+
+        // Assert
+        Assert.True(result.Success);
+        Assert.Equal(20m, product.Price);
+    }
+
+    [Fact]
+    public void UpdatePrice_Should_Fail_When_Negative()
+    {
+        // Arrange
+        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
+
+        // Act
+        var result = product.UpdatePrice(-5m);
+
+        // Assert
+        Assert.False(result.Success);
+        Assert.Equal(ErrorMessages.INVALID_PRODUCT_PRICE, result.Message);
+    }
+
+    [Fact]
+    public void ChangeCategory_Should_Update_Category_When_Valid()
+    {
+        // Arrange
+        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Active).Data!;
+        var newCategory = Category.Create("Informática", "PC y accesorios").Data!;
+
+        // Act
+        var result = product.ChangeCategory(newCategory);
+
+        // Assert
+        Assert.True(result.Success);
+        Assert.Equal(newCategory, product.Category);
+        Assert.Equal(newCategory.Id, product.CategoryId);
+    }
+
+    [Fact]
+    public void Activate_And_Deactivate_Should_Change_State()
+    {
+        // Arrange
+        var product = Product.Create(_category, _seller, "Laptop", "Desc", 10m, 1, DateTime.UtcNow, ProductState.Inactive).Data!;
+
+        // Act & Assert
+        product.Activate();
+        Assert.Equal(ProductState.Active, product.State);
+
+        product.Deactivate();
+        Assert.Equal(ProductState.Inactive, product.State);
+    }
+}

@@ -35,5 +35,11 @@ namespace MarketPlace.Domain
             return Result<CartItem>.Ok(cartItem);
         }
 
+        public void UpdateQuantity(int newQuantity)
+        {
+            if (newQuantity <= 0)
+                throw new ArgumentException(ErrorMessages.INVALID_QUANTITY);
+            Quantity = newQuantity;
+        }
     }
 }

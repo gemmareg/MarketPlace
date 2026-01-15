@@ -3,6 +3,7 @@ using MarketPlace.Shared;
 using MarketPlace.Shared.Result.Generic;
 using System;
 using System.Collections.Generic;
+using static MarketPlace.Shared.Enums;
 
 namespace MarketPlace.Domain
 {
@@ -21,16 +22,9 @@ namespace MarketPlace.Domain
         public Category Category { get; private set; }
         public User Seller { get; private set; }
 
-        public ICollection<OrderItem>? Products { get; set; }
-        public ICollection<Review>? Reviews { get; set; }
-        public ICollection<CartItem>? InCart { get; set; }
-
-        public enum ProductState
-        {
-            Active,
-            Inactive,
-            SoldOut
-        }
+        public ICollection<OrderItem> Products { get; set; }
+        public ICollection<Review> Reviews { get; set; }
+        public ICollection<CartItem> InCart { get; set; }
 
         private Product() { }
 
@@ -83,5 +77,75 @@ namespace MarketPlace.Domain
 
             return Result<Product>.Ok(product);
         }
+
+        public Result<Product> UpdatePrice(decimal newPrice)
+        {
+            if (newPrice < 0)
+                return Result<Product>.Fail(ErrorMessages.INVALID_PRODUCT_PRICE);
+
+            Price = newPrice;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> UpdateStock(int newStock)
+        {
+            if (newStock < 0)
+                return Result<Product>.Fail(ErrorMessages.INVALID_PRODUCT_STOCK);
+
+            Stock = newStock;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> Activate()
+        {
+            State = ProductState.Active;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> Deactivate()
+        {
+            State = ProductState.Inactive;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> UpdateName(string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+                return Result<Product>.Fail(ErrorMessages.INVALID_PRODUCT_NAME);
+
+            Name = newName;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> UpdateDescription(string newDescription)
+        {
+            Description = newDescription ?? string.Empty;
+            return Result<Product>.Ok(this);
+        }
+
+        public Result<Product> ChangeCategory(Category newCategory)
+        {
+            if (newCategory is null)
+                return Result<Product>.Fail(ErrorMessages.INVALID_CATEGORY_FOR_PRODUCT);
+
+            CategoryId = newCategory.Id;
+            Category = newCategory;
+
+            return Result<Product>.Ok(this);
+        }
+
+        public void DeductStock(int quantity)
+        {
+            if (Stock < quantity)
+                throw new InvalidOperationException(ErrorMessages.NOT_ENOUGHT_STOCK);
+            Stock -= quantity;
+        }
+
+        public void ReplenishStock(int quantity)
+        {
+            Stock += quantity;
+        }
+
+        public bool HasEnoughStock(int quantity) => Stock >= quantity;
     }
 }

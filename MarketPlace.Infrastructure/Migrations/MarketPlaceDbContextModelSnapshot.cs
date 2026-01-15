@@ -174,16 +174,13 @@ namespace MarketPlace.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Estado")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaPago")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastModifiedBy")
@@ -192,18 +189,21 @@ namespace MarketPlace.Infrastructure.Migrations
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("MetodoPago")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Monto")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("PedidoId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PedidoId")
+                    b.HasIndex("OrderId")
                         .IsUnique();
 
                     b.ToTable("Payments", (string)null);
@@ -393,13 +393,13 @@ namespace MarketPlace.Infrastructure.Migrations
 
             modelBuilder.Entity("MarketPlace.Domain.Payment", b =>
                 {
-                    b.HasOne("MarketPlace.Domain.Order", "Pedido")
-                        .WithOne("Pago")
-                        .HasForeignKey("MarketPlace.Domain.Payment", "PedidoId")
+                    b.HasOne("MarketPlace.Domain.Order", "Order")
+                        .WithOne("Payment")
+                        .HasForeignKey("MarketPlace.Domain.Payment", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Pedido");
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("MarketPlace.Domain.Product", b =>
@@ -457,7 +457,7 @@ namespace MarketPlace.Infrastructure.Migrations
                 {
                     b.Navigation("OrderItems");
 
-                    b.Navigation("Pago");
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("MarketPlace.Domain.Product", b =>

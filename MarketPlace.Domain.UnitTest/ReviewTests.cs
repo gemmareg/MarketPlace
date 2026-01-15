@@ -1,5 +1,6 @@
 ﻿using MarketPlace.Shared;
 using static MarketPlace.Domain.Product;
+using static MarketPlace.Shared.Enums;
 
 namespace MarketPlace.Domain.UnitTest
 {
