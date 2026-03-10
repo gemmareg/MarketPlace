@@ -1,10 +1,12 @@
 ﻿using MarketPlace.Application.Dtos;
 using MarketPlace.Application.Features.Products.Commands.CreateProduct;
 using MarketPlace.Application.Features.Products.Queries.GetProductsList;
+using MarketPlace.Host.Abstractions.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace MarketPlace.Host.Controllers.v1
 {
@@ -43,18 +45,15 @@ namespace MarketPlace.Host.Controllers.v1
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
         {
-            try
-            {
-                var result = await _mediator.Send(command);
+            if (!Guid.TryParse(User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var sellerId))
+                return BadRequest("SellerId inválido o no autenticado.");
+            command.SellerId = sellerId;
 
-                if (!result.Success) return BadRequest(result.Message);
+            var result = await _mediator.Send(command);
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            if (!result.Success) return BadRequest(result.Message);
+
+            return Ok();
         }
     }
 }

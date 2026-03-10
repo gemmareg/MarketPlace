@@ -1,4 +1,6 @@
-﻿using MarketPlace.Host.Extensions.Options;
+﻿using MarketPlace.Host.Abstractions.Security;
+using MarketPlace.Host.Extensions.Options;
+using MarketPlace.Host.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -15,6 +17,8 @@ namespace MarketPlace.Host.Extensions
             services.AddSwaggerDocumentation();
             services.AddRabbitMq(configuration);
             services.AddHostedService<UserRegisteredConsumer>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUser, CurrentUser>();
 
             return services;
         }
