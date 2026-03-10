@@ -2,6 +2,7 @@
 using MarketPlace.Application.Features.Products.Commands.CreateProduct;
 using MarketPlace.Application.Features.Products.Queries.GetProductsList;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -18,6 +19,7 @@ namespace MarketPlace.Host.Controllers.v1
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpGet("{search}")]
         [ProducesResponseType(typeof(IEnumerable<ProductDto>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts(string search)
@@ -38,6 +40,7 @@ namespace MarketPlace.Host.Controllers.v1
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
         {
             try

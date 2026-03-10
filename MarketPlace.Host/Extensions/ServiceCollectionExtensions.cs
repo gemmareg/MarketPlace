@@ -47,7 +47,7 @@ namespace MarketPlace.Host.Extensions
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "AuthService API",
+                    Title = "MarketPlace API",
                     Version = "v1"
                 });
 
