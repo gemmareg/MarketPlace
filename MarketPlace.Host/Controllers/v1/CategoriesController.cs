@@ -1,5 +1,6 @@
 ﻿using MarketPlace.Application.Features.Categories.Commands.CreateCategory;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarketPlace.Host.Controllers.v1
@@ -16,6 +17,7 @@ namespace MarketPlace.Host.Controllers.v1
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
         {
             try
