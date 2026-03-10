@@ -31,6 +31,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Api", "MarketPl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Application.UnitTest", "MarketPlace.Application.UnitTest\MarketPlace.Application.UnitTest.csproj", "{5BC7209E-8F76-4FB7-A6D2-5853CF54D222}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Host", "MarketPlace.Host\MarketPlace.Host.csproj", "{54D4243C-3327-4828-B2D3-BA8308AF407A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +76,10 @@ Global
 		{5BC7209E-8F76-4FB7-A6D2-5853CF54D222}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BC7209E-8F76-4FB7-A6D2-5853CF54D222}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BC7209E-8F76-4FB7-A6D2-5853CF54D222}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54D4243C-3327-4828-B2D3-BA8308AF407A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54D4243C-3327-4828-B2D3-BA8308AF407A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54D4243C-3327-4828-B2D3-BA8308AF407A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54D4243C-3327-4828-B2D3-BA8308AF407A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +96,7 @@ Global
 		{868A62E5-D79F-3E0F-CEB8-2F5C0BB99E76} = {DF6ACC4A-E6FA-4D53-B5C0-49AE6ED03E20}
 		{89A9BF61-2DA5-2CBB-4E43-820AB87610F0} = {5A8D36FA-83A0-4AB4-AC96-57F13A2B188E}
 		{5BC7209E-8F76-4FB7-A6D2-5853CF54D222} = {6DC90A7A-EAC6-47E6-B849-C72685164243}
+		{54D4243C-3327-4828-B2D3-BA8308AF407A} = {5A8D36FA-83A0-4AB4-AC96-57F13A2B188E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B46F66F7-A96B-414F-ADD3-1026357562E5}
