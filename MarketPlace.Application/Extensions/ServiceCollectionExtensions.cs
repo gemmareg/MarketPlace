@@ -13,6 +13,7 @@ namespace MarketPlace.Application.Extensions
             services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
