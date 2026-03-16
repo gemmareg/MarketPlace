@@ -24,11 +24,17 @@ namespace MarketPlace.Application.Features.Products.Commands.CreateProduct
 
         public async Task<Result<Guid>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
-            if (category == null) return Result<Guid>.Fail("La categoría no existe");
+            if (!Guid.TryParse(request.SellerId, out var sellerId))
+                return Result<Guid>.Fail("Usuario autenticado inválido.");
 
-            var seller = await _userRepository.GetByIdAsync(request.SellerId);
+            var seller = await _userRepository.GetByIdAsync(sellerId);
             if (seller == null) return Result<Guid>.Fail("El usuario no existe");
+
+            if (!Guid.TryParse(request.CategoryId, out var categoryId))
+                return Result<Guid>.Fail("Categoría inválido.");
+
+            var category = await _categoryRepository.GetByIdAsync(categoryId);
+            if (category == null) return Result<Guid>.Fail("La categoría no existe");
 
             var product = Product.Create(
                 category, 

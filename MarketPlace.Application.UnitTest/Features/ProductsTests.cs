@@ -88,8 +88,8 @@ namespace MarketPlace.Application.UnitTest.Features
                     Name = "Test Product",
                     Description = "Test Description",
                     Price = 100,
-                    CategoryId = Guid.NewGuid(),
-                    SellerId = Guid.NewGuid(),
+                    CategoryId = Guid.NewGuid().ToString(),
+                    SellerId = Guid.NewGuid().ToString(),
                     Stock = 10
                 },
                 CancellationToken.None);
@@ -114,8 +114,8 @@ namespace MarketPlace.Application.UnitTest.Features
                 Description = "Test Description",
                 Price = 100,
                 Stock = 10,
-                CategoryId = Guid.NewGuid(),
-                SellerId = Guid.NewGuid()
+                CategoryId = Guid.NewGuid().ToString(),
+                SellerId = Guid.NewGuid().ToString()
             };
 
             // Act
@@ -157,8 +157,8 @@ namespace MarketPlace.Application.UnitTest.Features
                 Description = "Test Description",
                 Price = 100,
                 Stock = 10,
-                CategoryId = Guid.NewGuid(),
-                SellerId = Guid.NewGuid()
+                CategoryId = Guid.NewGuid().ToString(),
+                SellerId = Guid.NewGuid().ToString()
             };
 
             // Act

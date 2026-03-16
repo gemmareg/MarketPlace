@@ -1,5 +1,6 @@
-﻿using MarketPlace.Application.Abstractions.Services;
-using MarketPlace.Application.Dtos.Events;
+﻿using Auth.Contracts.Events;
+using MarketPlace.Application.Abstractions.Services;
+using MarketPlace.Shared;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -41,7 +42,7 @@ public class UserRegisteredConsumer : BackgroundService
         consumer.Received += async (sender, args) =>
         {
             var json = Encoding.UTF8.GetString(args.Body.ToArray());
-            var evt = JsonSerializer.Deserialize<UserRegisteredEvent>(json);
+            var evt = JsonSerializer.Deserialize<UserRegisteredEvent>(json, JsonOptions.Default);
 
             Console.WriteLine($"[Marketplace] Received user.registered: {evt.UserId} - {evt.Name}");
 
