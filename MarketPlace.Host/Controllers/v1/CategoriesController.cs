@@ -1,4 +1,6 @@
 ﻿using MarketPlace.Application.Features.Categories.Commands.CreateCategory;
+using MarketPlace.Application.Features.Categories.Queries.GetCategoryList;
+using MarketPlace.Host.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,22 +18,23 @@ namespace MarketPlace.Host.Controllers.v1
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetCategories([FromQuery] GetCategoryListRequest request)
+        {
+            var result = await _mediator.Send(request);
+
+            return result.ToActionResult();
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
         {
-            try
-            {
-                var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-                if (!result.Success) return BadRequest(result.Message);
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            return result.ToActionResult();
         }
+
     }
 }

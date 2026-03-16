@@ -9,6 +9,7 @@ namespace MarketPlace.Domain
     public class User : BaseEntity
     {
         public string Name { get; private set; } = string.Empty;
+        public bool IsActive { get; private set; }
 
         // Relaciones
         public ICollection<Product> Products { get; set; } = [];
@@ -31,5 +32,10 @@ namespace MarketPlace.Domain
 
             return Result<User>.Ok(user);
         }  
+
+        public void SoftDelete()
+        {
+            IsActive = false;
+        }
     }
 }

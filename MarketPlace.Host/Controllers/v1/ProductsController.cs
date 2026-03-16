@@ -1,7 +1,8 @@
-﻿using MarketPlace.Application.Dtos;
+﻿using Azure.Core;
+using MarketPlace.Application.Dtos;
 using MarketPlace.Application.Features.Products.Commands.CreateProduct;
 using MarketPlace.Application.Features.Products.Queries.GetProductsList;
-using MarketPlace.Host.Abstractions.Security;
+using MarketPlace.Host.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,33 +28,32 @@ namespace MarketPlace.Host.Controllers.v1
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts(string search)
         {
             var query = new GetProductsListQuery { Search = search };
-            try
-            {
-                var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query);
 
-                if (!result.Success) return BadRequest(result.Message);
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            return result.ToActionResult();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
+        [Authorize]
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand request)
         {
-            if (!Guid.TryParse(User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var sellerId))
-                return BadRequest("SellerId inválido o no autenticado.");
-            command.SellerId = sellerId;
+            var sellerId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? User?.FindFirst("sub")?.Value
+                ?? User?.FindFirst("id")?.Value;
+
+            var command = new CreateProductCommand
+            {
+                Name = request.Name,
+                Description = request.Description,
+                Price = request.Price,
+                CategoryId = request.CategoryId,
+                Stock = request.Stock,
+                SellerId = sellerId,
+            };
 
             var result = await _mediator.Send(command);
 
-            if (!result.Success) return BadRequest(result.Message);
-
-            return Ok();
+            return result.ToActionResult();
         }
     }
 }

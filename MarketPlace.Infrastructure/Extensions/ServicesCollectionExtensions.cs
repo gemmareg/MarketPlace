@@ -31,5 +31,12 @@ namespace MarketPlace.Infrastructure.Extensions
 
             return services;
         }
+
+        public static async Task CreateDBSeed(this IServiceProvider services)
+        {
+            using var scope = services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<MarketPlaceDbContext>();
+            await dbContext.Database.MigrateAsync();
+        }
     }
 }

@@ -1,7 +1,7 @@
-﻿using MarketPlace.Application.Abstractions.Repositories;
+﻿using Auth.Contracts.Events;
+using MarketPlace.Application.Abstractions.Repositories;
 using MarketPlace.Application.Abstractions.Services;
 using MarketPlace.Application.Abstractions.UnitOfWork;
-using MarketPlace.Application.Dtos.Events;
 using MarketPlace.Domain;
 using MarketPlace.Shared.Result.NonGeneric;
 using Microsoft.Extensions.Logging;
@@ -13,7 +13,7 @@ namespace MarketPlace.Application.Services
         public async Task<Result> CreateUserFromEvent(UserRegisteredEvent evt)
         {
             Guid userId;
-            if (!Guid.TryParse(evt.UserId,out userId))
+            if (!Guid.TryParse(evt.UserId, out userId))
             {
                 logger.LogError("Failed to create user. {UserId} is not a valid guid", evt.UserId);
                 return Result.Fail("User id is not a valid guid");
@@ -22,7 +22,7 @@ namespace MarketPlace.Application.Services
             var resultUser = User.Create(userId, evt.Name);
             if (!resultUser.Success)
             {
-                logger.LogError("Could not create user: {Message}",resultUser.Message);
+                logger.LogError("Could not create user: {Message}", resultUser.Message);
                 return Result.Fail($"Could not create user: {resultUser.Message}");
             }
 
@@ -32,6 +32,28 @@ namespace MarketPlace.Application.Services
             await unitOfWork.SaveChangesAsync();
 
             logger.LogInformation("User {UserId} created successfully from event", user.Id);
+            return Result.Ok();
+        }
+
+        public async Task<Result> SoftDeleteUserFromEvent(UserSoftDeletedEvent evt)
+        {
+            Guid userId;
+            if (!Guid.TryParse(evt.UserId, out userId))
+            {
+                logger.LogError("Failed to soft delete user. {UserId} is not a valid guid", evt.UserId);
+                return Result.Fail("User id is not a valid guid");
+            }
+            var user = await userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                logger.LogWarning("User with id {UserId} not found for soft deletion", userId);
+                return Result.Fail("User not found");
+            }
+
+            user.SoftDelete();
+            await unitOfWork.SaveChangesAsync();
+            
+            logger.LogInformation("User {UserId} soft deleted successfully from event", user.Id);
             return Result.Ok();
         }
     }
