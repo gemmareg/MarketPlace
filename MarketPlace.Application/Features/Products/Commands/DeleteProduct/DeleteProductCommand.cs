@@ -5,6 +5,8 @@ namespace MarketPlace.Application.Features.Products.Commands.DeleteProduct
 {
     public class DeleteProductCommand : IRequest<Result>
     {
-        public Guid Id { get; set; }
+        public string UserId { get; set; }
+        public bool IsAdmin { get; set; }
+        public string Id { get; set; }
     }
 }

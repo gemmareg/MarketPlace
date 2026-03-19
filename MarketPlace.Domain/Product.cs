@@ -148,5 +148,7 @@ namespace MarketPlace.Domain
         }
 
         public bool HasEnoughStock(int quantity) => Stock >= quantity;
+
+        public bool ValidateSeller(Guid userId) => SellerId == userId;
     }
 }

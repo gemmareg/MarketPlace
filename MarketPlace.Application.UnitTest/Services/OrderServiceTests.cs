@@ -73,7 +73,7 @@ public class OrderServiceTests
         var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
         var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
         var product = Product.Create(category, user, "Test Product", "Test Description", 100, 1, DateTime.Now, ProductState.Active).Data!;
-        var cartItem = CartItem.Create(user.Id, product.Id, 2).Data!;
+        var cartItem = CartItem.Create(user, product, 2).Data!;
 
         _userRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                  .ReturnsAsync(user);
@@ -104,7 +104,7 @@ public class OrderServiceTests
         var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
         var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
         var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
-        var cartItem = CartItem.Create(user.Id, product.Id, 2).Data!;
+        var cartItem = CartItem.Create(user, product, 2).Data!;
 
         _userRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                  .ReturnsAsync(user);
@@ -138,7 +138,7 @@ public class OrderServiceTests
         var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
         var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
         var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
-        var cartItem = CartItem.Create(user.Id, product.Id, 2).Data!;
+        var cartItem = CartItem.Create(user, product, 2).Data!;
         var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
 
         _orderRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
@@ -179,7 +179,7 @@ public class OrderServiceTests
         var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
         var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
         var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
-        var cartItem = CartItem.Create(user.Id, product.Id, 1).Data!;
+        var cartItem = CartItem.Create(user, product, 1).Data!;
         var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
 
         _orderRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
@@ -218,7 +218,7 @@ public class OrderServiceTests
         var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
         var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
         var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
-        var cartItem = CartItem.Create(user.Id, product.Id, 1).Data!;
+        var cartItem = CartItem.Create(user, product, 1).Data!;
         var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
 
         _orderRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
@@ -257,7 +257,7 @@ public class OrderServiceTests
         var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
         var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
         var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
-        var cartItem = CartItem.Create(user.Id, product.Id, 1).Data!;
+        var cartItem = CartItem.Create(user, product, 1).Data!;
         var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
 
         _orderRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
@@ -296,7 +296,7 @@ public class OrderServiceTests
         var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
         var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
         var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
-        var cartItem = CartItem.Create(user.Id, product.Id, 1).Data!;
+        var cartItem = CartItem.Create(user, product, 1).Data!;
         var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
         var orderDto = new OrderDto() { Id = order.Id.ToString(), UserId = order.UserId.ToString(), OrderDate = order.CreatedDate, TotalAmount = order.Total, Status = order.Status.ToString() };
 
@@ -338,7 +338,7 @@ public class OrderServiceTests
         var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
         var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
         var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
-        var cartItem = CartItem.Create(user.Id, product.Id, 1).Data!;
+        var cartItem = CartItem.Create(user, product, 1).Data!;
         var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
         var orderDto = new OrderDto() { Id = order.Id.ToString(), UserId = order.UserId.ToString(), OrderDate = order.CreatedDate, TotalAmount = order.Total, Status = order.Status.ToString() };
 

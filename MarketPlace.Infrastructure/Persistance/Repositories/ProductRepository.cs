@@ -26,5 +26,10 @@ namespace MarketPlace.Infrastructure.Persistance.Repositories
         {
             return await _dbSet.Where(p => p.CategoryId.ToString().Equals(categoryId.ToString())).ToListAsync();
         }
+
+        public async Task<List<Product>> GetProductsBySellerAsync(Guid sellerId)
+        {
+            return await _dbSet.Where(p => p.SellerId.ToString().Equals(sellerId.ToString())).ToListAsync();
+        }
     }
 }

@@ -38,8 +38,8 @@ namespace MarketPlace.Infrastructure.IntegrationTest.Repositories
                 dateCreated: DateTime.UtcNow,
                 state: ProductState.Active).Data!;
             _cartItem = CartItem.Create(
-                userId: _user.Id,
-                productId: _product.Id,
+                user: _user,
+                product: _product,
                 quantity: QUANTITY).Data!;
 
             _fixture.DbContext.Categories.Add(_category);

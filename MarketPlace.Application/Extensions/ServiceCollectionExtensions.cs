@@ -14,6 +14,7 @@ namespace MarketPlace.Application.Extensions
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProductService, ProductService>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
