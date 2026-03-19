@@ -21,6 +21,9 @@ namespace MarketPlace.Application.Features.CartItems.Commands.DeleteCartItem
             var cartItem = _cartItemRepository.GetByIdAsync(new Guid(request.CartItemId)).Result;
             if (cartItem == null) return Result.Fail("Cart item not found.");
 
+            if (cartItem.UserId.ToString() != request.UserId)
+                return Result.Fail("You are not alloyed to remove this cartItem");
+
             await _cartItemRepository.RemoveAsync(cartItem);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

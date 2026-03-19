@@ -29,7 +29,10 @@ namespace MarketPlace.Application.Features.CartItems.Commands.CreateCartItem
             var product = await _productRepository.GetByIdAsync(new Guid(request.ProductId));
             if (product == null) return Result.Fail("Product not found.");
 
-            var cartItemResult = CartItem.Create(user.Id, product.Id, request.Quantity);
+            if (product.SellerId.ToString() == request.UserId)
+                return Result.Fail("You cannot buy your own product");
+
+            var cartItemResult = CartItem.Create(user, product, request.Quantity);
             if (!cartItemResult.Success) return Result.Fail(cartItemResult.Message);
 
             await _cartItemRepository.AddAsync(cartItemResult.Data!);

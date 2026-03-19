@@ -2,8 +2,11 @@
 {
     public class CartItemDto
     {
-        public Guid UserId { get; private set; }
-        public Guid ProductId { get; private set; }
-        public int Quantity { get; private set; }
+        public Guid Id { get; set; }
+        public Guid ProductId { get; set; }
+        public string ProductName { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public decimal TotalPrice { get; set; }
     }
 }

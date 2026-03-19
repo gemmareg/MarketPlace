@@ -21,7 +21,11 @@ namespace MarketPlace.Application.Features.CartItems.Commands.UpdateItem
             var cartItem = _cartItemRepository.GetByIdAsync(new Guid(request.CartItemId)).Result;
             if (cartItem == null) return Result.Fail("Cart item not found.");
 
-            cartItem.UpdateQuantity(request.Quantity);
+            if (cartItem.UserId.ToString() != request.UserId)
+                return Result.Fail("You are not allowed to modify this cart item.");
+
+            var result = cartItem.UpdateQuantity(request.Quantity);
+            if (!result.Success) return result;
             await _cartItemRepository.UpdateAsync(cartItem);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

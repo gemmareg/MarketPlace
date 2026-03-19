@@ -1,6 +1,7 @@
 ﻿using MarketPlace.Domain.Common;
 using MarketPlace.Shared;
 using MarketPlace.Shared.Result.Generic;
+using MarketPlace.Shared.Result.NonGeneric;
 using System;
 
 namespace MarketPlace.Domain
@@ -16,30 +17,33 @@ namespace MarketPlace.Domain
 
         private CartItem() { }
 
-        public static Result<CartItem> Create(Guid userId, Guid productId, int quantity)
+        public static Result<CartItem> Create(User user, Product product, int quantity)
         {
-            if (userId == Guid.Empty) 
+            if (user.Id == Guid.Empty) 
                 return Result<CartItem>.Fail(ErrorMessages.INVALID_USER);
 
-            if (productId == Guid.Empty)
+            if (product.Id == Guid.Empty)
                 return Result<CartItem>.Fail(ErrorMessages.INVALID_PRODUCT);
 
             if(quantity == 0)
                 return Result<CartItem>.Fail(ErrorMessages.INVALID_QUANTITY);
 
             var cartItem = new CartItem();
-            cartItem.UserId = userId;
-            cartItem.ProductId = productId;
+            cartItem.UserId = user.Id;
+            cartItem.ProductId = product.Id;
+            cartItem.User = user;
+            cartItem.Product = product;
             cartItem.Quantity = quantity;
 
             return Result<CartItem>.Ok(cartItem);
         }
 
-        public void UpdateQuantity(int newQuantity)
+        public Result UpdateQuantity(int newQuantity)
         {
             if (newQuantity <= 0)
-                throw new ArgumentException(ErrorMessages.INVALID_QUANTITY);
+                return Result.Fail(ErrorMessages.INVALID_QUANTITY);
             Quantity = newQuantity;
+            return Result.Ok();
         }
     }
 }

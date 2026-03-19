@@ -1,4 +1,5 @@
-﻿using MarketPlace.Application.Abstractions.Repositories;
+﻿using AutoMapper;
+using MarketPlace.Application.Abstractions.Repositories;
 using MarketPlace.Application.Abstractions.UnitOfWork;
 using MarketPlace.Application.Features.Categories.Commands.CreateCategory;
 using MarketPlace.Application.Features.Categories.Commands.DeleteCategory;
@@ -11,6 +12,7 @@ namespace MarketPlace.Application.UnitTest.Features
     {
         private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWork;
+        private readonly Mock<IMapper> _mapperMock;
 
         private readonly CreateCategoryCommandHandler _createCategoryCommandHandler;
         private readonly UpdateCategoryCommandHandler _updateCategoryCommandHandler;
@@ -20,8 +22,9 @@ namespace MarketPlace.Application.UnitTest.Features
         {
             _categoryRepositoryMock = new Mock<ICategoryRepository>();
             _unitOfWork = new Mock<IUnitOfWork>();
+            _mapperMock = new Mock<IMapper>();
 
-            _createCategoryCommandHandler = new CreateCategoryCommandHandler(_categoryRepositoryMock.Object, _unitOfWork.Object);
+            _createCategoryCommandHandler = new CreateCategoryCommandHandler(_categoryRepositoryMock.Object, _unitOfWork.Object, _mapperMock.Object);
             _updateCategoryCommandHandler = new UpdateCategoryCommandHandler(_categoryRepositoryMock.Object, _unitOfWork.Object);
             _deleteCategoryCommandHandler = new DeleteCategoryCommandHandler(_categoryRepositoryMock.Object, _unitOfWork.Object);
         }

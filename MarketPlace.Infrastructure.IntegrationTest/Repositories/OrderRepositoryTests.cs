@@ -43,8 +43,8 @@ namespace MarketPlace.Infrastructure.IntegrationTest.Repositories
             _fixture.DbContext.SaveChanges();
 
             _cartItem = CartItem.Create(
-                userId: _user.Id,
-                productId: _product.Id,
+                user: _user,
+                product: _product,
                 quantity: QUANTITY).Data!;
             _order = Order.Create(
                 user: _user,
