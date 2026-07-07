@@ -8,7 +8,7 @@ namespace MarketPlace.Application.Features.Products.Commands.DeleteProduct
     {
         public async Task<Result> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            return await productService.DeleteProduct(request.Id, request.UserId, request.IsAdmin);
+            return await productService.DeleteProduct(request.Id, request.UserId, request.HasDeleteAnyPermission);
         }
     }
 }

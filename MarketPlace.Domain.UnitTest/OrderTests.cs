@@ -14,8 +14,8 @@ namespace MarketPlace.Domain.UnitTest
             // Arrange
             var user = User.Create(new Guid(VALID_USERID), VALID_USER_NAME).Data!;
             var cartItems = new List<CartItem>(){
-                    CartItem.Create(user.Id, Guid.NewGuid(), 2).Data!,
-                    CartItem.Create(user.Id, Guid.NewGuid(), 1).Data!
+                    CartItem.Create(user, CreateProduct(user), 2).Data!,
+                    CartItem.Create(user, CreateProduct(user), 1).Data!
                 };
 
             // Act
@@ -34,9 +34,10 @@ namespace MarketPlace.Domain.UnitTest
         {
             // Arrange
             User? user = null;
+            var cartItemOwner = User.Create(Guid.NewGuid(), "Cart Owner").Data!;
             var cartItems = new List<CartItem>(){
-                    CartItem.Create(Guid.NewGuid(), Guid.NewGuid(), 2).Data!,
-                    CartItem.Create(Guid.NewGuid(), Guid.NewGuid(), 1).Data!
+                    CartItem.Create(cartItemOwner, CreateProduct(cartItemOwner), 2).Data!,
+                    CartItem.Create(cartItemOwner, CreateProduct(cartItemOwner), 1).Data!
                 };
             // Act
             var result = Order.Create(user!, cartItems);
@@ -154,11 +155,21 @@ namespace MarketPlace.Domain.UnitTest
                 DateTime.UtcNow,
                 ProductState.Active).Data!;
 
-            var cartItem = CartItem.Create(user.Id, product.Id, 2).Data!;
+            var cartItem = CartItem.Create(user, product, 2).Data!;
             var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
 
             return order;
         }
+
+        private static Product CreateProduct(User seller) => Product.Create(
+            Category.Create("Electronics", "Desc").Data!,
+            seller,
+            "Product",
+            "Desc",
+            10m,
+            10,
+            DateTime.UtcNow,
+            ProductState.Active).Data!;
         #endregion
     }
 }

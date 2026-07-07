@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MarketPlace.Shared;
 
 namespace MarketPlace.Application.Features.CartItems.Commands.DeleteCartItem
 {
@@ -8,9 +9,7 @@ namespace MarketPlace.Application.Features.CartItems.Commands.DeleteCartItem
         {
             RuleFor(x => x.CartItemId)
                 .NotEmpty().WithMessage("Cart item ID is required.")
-                .Must(BeAValidGuid).WithMessage("Cart item ID must be a valid GUID.");
+                .Must(ValidationHelpers.BeAValidGuid).WithMessage("Cart item ID must be a valid GUID.");
         }
-
-        private static bool BeAValidGuid(string? value) => Guid.TryParse(value, out _);
     }
 }

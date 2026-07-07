@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MarketPlace.Shared;
 
 namespace MarketPlace.Application.Features.CartItems.Queries.GetCartItems
 {
@@ -8,9 +9,7 @@ namespace MarketPlace.Application.Features.CartItems.Queries.GetCartItems
         {
             RuleFor(x => x.UserId)
                 .NotEmpty().WithMessage("User ID is required.")
-                .Must(BeAValidGuid).WithMessage("User ID must be a valid GUID.");
+                .Must(ValidationHelpers.BeAValidGuid).WithMessage("User ID must be a valid GUID.");
         }
-
-        private static bool BeAValidGuid(string? value) => Guid.TryParse(value, out _);
     }
 }

@@ -6,6 +6,7 @@
         public const string INVALID_USER = "El usuario no es válido";
         public const string INVALID_PRODUCT = "El producto no es válido";
         public const string INVALID_QUANTITY = "La cantidad no es válida";
+        public const string INSUFFICIENT_STOCK = "No hay suficiente stock para este producto.";
 
         // Category errors
         public const string INVALID_CATEGORY_NAME = "El nombre de la categoría no puede estar vacío.";

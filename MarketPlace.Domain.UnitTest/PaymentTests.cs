@@ -28,7 +28,7 @@ namespace MarketPlace.Domain.UnitTest
                 dateCreated: DateTime.UtcNow,
                 state: ProductState.Active).Data!;
             _cartItems = new List<CartItem>(){
-                CartItem.Create(_user.Id, _product.Id, 2).Data!,
+                CartItem.Create(_user, _product, 2).Data!,
             };
             _order = Order.Create(_user, _cartItems).Data!;
         }

@@ -18,7 +18,7 @@ namespace MarketPlace.Application.Features.Categories.Commands.DeleteCategory
 
         public async Task<Result> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            var category = await _categoryRepository.GetByIdAsync(request.Id);
+            var category = await _categoryRepository.GetByIdAsync(Guid.Parse(request.Id));
 
             if (category == null) return Result.Fail("La categoría no existe");
             if(category.Productos != null && category.Productos.Any())

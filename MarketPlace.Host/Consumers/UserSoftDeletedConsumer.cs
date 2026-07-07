@@ -46,7 +46,7 @@ namespace MarketPlace.Host.Consumers
                 var json = Encoding.UTF8.GetString(args.Body.ToArray());
                 var evt = JsonSerializer.Deserialize<UserSoftDeletedEvent>(json, JsonOptions.Default);
 
-                Console.WriteLine($"[Marketplace] Received user.registered: {evt.UserId} - {evt.UserId}");
+                Console.WriteLine($"[Marketplace] Received user.registered: {evt.userId} - {evt.userId}");
 
                 using var scope = _scopeFactory.CreateScope();
                 var userService = scope.ServiceProvider.GetRequiredService<IUserService>();

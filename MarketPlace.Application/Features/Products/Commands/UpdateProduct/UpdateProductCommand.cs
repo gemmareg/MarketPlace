@@ -14,6 +14,6 @@ namespace MarketPlace.Application.Features.Products.Commands.UpdateProduct
         public int Stock { get; set; }
         public ProductState State { get; set; }
         public string UserId { get; set; }
-        public bool IsAdmin { get; set; }
+        public bool HasUpdateAnyPermission { get; set; }
     }
 }

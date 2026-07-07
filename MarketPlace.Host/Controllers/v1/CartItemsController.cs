@@ -1,4 +1,5 @@
-﻿using MarketPlace.Application.Dtos;
+﻿using Auth.Contracts.Extensions;
+using MarketPlace.Application.Dtos;
 using MarketPlace.Application.Features.CartItems.Commands.CreateCartItem;
 using MarketPlace.Application.Features.CartItems.Commands.DeleteCartItem;
 using MarketPlace.Application.Features.CartItems.Commands.UpdateItem;

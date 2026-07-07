@@ -13,7 +13,7 @@ namespace MarketPlace.Application.Abstractions.Services
         Task<Result<List<ProductDto>>> GetProductsListBySeller(string sellerId);
         Task<Result<ProductDto>> GetProductById(string productId);
         Task<Result<Guid>> CreateProduct(CreateProductCommand request);
-        Task<Result> DeleteProduct(string productId, string userId, bool isAdmin);
+        Task<Result> DeleteProduct(string productId, string userId, bool hasDeleteAnyPermission);
         Task<Result> UpdateProduct(UpdateProductCommand request);
     }
 }

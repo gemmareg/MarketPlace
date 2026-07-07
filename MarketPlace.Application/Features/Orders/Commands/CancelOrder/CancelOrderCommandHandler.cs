@@ -15,7 +15,7 @@ namespace MarketPlace.Application.Features.Orders.Commands.CancelOrder
 
         public async Task<Result> Handle(CancelOrderCommand request, CancellationToken cancellationToken)
         {
-            return await _orderService.CancelOrder(request.OrderId);
+            return await _orderService.CancelOrder(request.UserId, request.OrderId);
         }
     }
 }

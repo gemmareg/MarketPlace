@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MarketPlace.Shared;
 
 namespace MarketPlace.Application.Features.Products.Queries.GetProductsListByCategory
 {
@@ -8,9 +9,7 @@ namespace MarketPlace.Application.Features.Products.Queries.GetProductsListByCat
         {
             RuleFor(x => x.CategoryId)
                 .NotEmpty().WithMessage("CategoryId must not be empty.")
-                .Must(BeAValidGuid).WithMessage("El valor no es un Guid válido");
+                .Must(ValidationHelpers.BeAValidGuid).WithMessage("El valor no es un Guid válido");
         }
-
-        private static bool BeAValidGuid(string? value) => Guid.TryParse(value, out _);
     }
 }

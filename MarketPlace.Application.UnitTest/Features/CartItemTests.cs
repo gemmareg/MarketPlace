@@ -57,7 +57,7 @@ namespace MarketPlace.Application.UnitTest.Features
         {
             // Arrange
             _userRepository.Setup(r => r.GetByIdAsync(_userFixture.Id)).ReturnsAsync(_userFixture);
-            _productRepository.Setup(r => r.GetByIdAsync(_userFixture.Id)).ReturnsAsync(_productFixture);
+            _productRepository.Setup(r => r.GetByIdAsync(_productFixture.Id)).ReturnsAsync(_productFixture);
 
             var command = new CreateCartItemCommand
             {
@@ -79,13 +79,15 @@ namespace MarketPlace.Application.UnitTest.Features
         public async Task CreateCartItem_Should_Fail_Ok_When_User_Buys_Them_Product()
         {
             // Arrange
+            var ownProduct = Product.Create(_categoryFixture, _userFixture, "own product", "own product description", 5, 10, DateTime.Now, ProductState.Active).Data!;
+
             _userRepository.Setup(r => r.GetByIdAsync(_userFixture.Id)).ReturnsAsync(_userFixture);
-            _productRepository.Setup(r => r.GetByIdAsync(_productFixture.Id)).ReturnsAsync(_productFixture);
+            _productRepository.Setup(r => r.GetByIdAsync(ownProduct.Id)).ReturnsAsync(ownProduct);
 
             var command = new CreateCartItemCommand
             {
                 UserId = _userFixture.Id.ToString(),
-                ProductId = _productFixture.Id.ToString(),
+                ProductId = ownProduct.Id.ToString(),
                 Quantity = 2
             };
 
@@ -124,7 +126,7 @@ namespace MarketPlace.Application.UnitTest.Features
         public async Task UpdateCartItem_Should_Update_Quantity()
         {
             // Arrange
-            var cartItem = CartItem.Create(_sellerFixture, _productFixture, 1).Data!;
+            var cartItem = CartItem.Create(_userFixture, _productFixture, 1).Data!;
 
             _cartItemRepository.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(cartItem);
@@ -149,7 +151,7 @@ namespace MarketPlace.Application.UnitTest.Features
         public async Task DeleteCartItem_Should_Remove_Item_When_Found()
         {
             // Arrange
-            var cartItem = CartItem.Create(_sellerFixture, _productFixture, 1).Data!;
+            var cartItem = CartItem.Create(_userFixture, _productFixture, 1).Data!;
 
             _cartItemRepository.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(cartItem);

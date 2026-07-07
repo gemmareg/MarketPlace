@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MarketPlace.Shared;
 
 namespace MarketPlace.Application.Features.CartItems.Commands.UpdateItem
 {
@@ -11,9 +12,7 @@ namespace MarketPlace.Application.Features.CartItems.Commands.UpdateItem
                 .GreaterThan(0).WithMessage("Quantity must be greater than zero.");
             RuleFor(x => x.CartItemId)
                 .NotEmpty().WithMessage("CartItemId is required.")
-                .Must(BeAValidGuid).WithMessage("CartItemId must be a valid GUID.");
+                .Must(ValidationHelpers.BeAValidGuid).WithMessage("CartItemId must be a valid GUID.");
         }
-
-        private static bool BeAValidGuid(string? value) => Guid.TryParse(value, out _);
     }
 }

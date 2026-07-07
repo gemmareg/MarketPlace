@@ -44,7 +44,7 @@ public class UserRegisteredConsumer : BackgroundService
             var json = Encoding.UTF8.GetString(args.Body.ToArray());
             var evt = JsonSerializer.Deserialize<UserRegisteredEvent>(json, JsonOptions.Default);
 
-            Console.WriteLine($"[Marketplace] Received user.registered: {evt.UserId} - {evt.Name}");
+            Console.WriteLine($"[Marketplace] Received user.registered: {evt.userId} - {evt.name}");
 
             using var scope = _scopeFactory.CreateScope();
             var userService = scope.ServiceProvider.GetRequiredService<IUserService>();

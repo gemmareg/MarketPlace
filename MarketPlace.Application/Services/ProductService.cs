@@ -94,12 +94,12 @@ namespace MarketPlace.Application.Services
             return Result<Guid>.Ok(product.Data!.Id);
         }
 
-        public async Task<Result> DeleteProduct(string productId, string userId, bool isAdmin)
+        public async Task<Result> DeleteProduct(string productId, string userId, bool hasDeleteAnyPermission)
         {
             var product = await productRepository.GetByIdAsync(Guid.Parse(productId));
             if (product == null) return Result.Fail("El producto no existe.");
 
-            if (!product.ValidateSeller(Guid.Parse(userId)) || isAdmin)
+            if (!product.ValidateSeller(Guid.Parse(userId)) && !hasDeleteAnyPermission)
                 return Result.Fail("No tienes permiso para eliminar este producto.");
 
             await productRepository.RemoveAsync(product);
@@ -113,16 +113,17 @@ namespace MarketPlace.Application.Services
             var product = await productRepository.GetByIdAsync(Guid.Parse(request.Id));
             if (product == null) return Result.Fail("El producto no existe");
 
-            if (!product.ValidateSeller(Guid.Parse(request.UserId)) || request.IsAdmin)
+            if (!product.ValidateSeller(Guid.Parse(request.UserId)) && !request.HasUpdateAnyPermission)
                 return Result.Fail("No tienes permiso para actualizar este producto.");
     
             var category = await categoryRepository.GetByIdAsync(Guid.Parse(request.CategoryId));
+            if (category == null) return Result.Fail("La categoría no existe");
 
             product.UpdatePrice(request.Price);
             product.UpdateStock(request.Stock);
             product.UpdateName(request.Name);
             product.UpdateDescription(request.Description);
-            product.ChangeCategory(product.Category);
+            product.ChangeCategory(category);
             if (product.State == ProductState.Active) product.Activate();
             else product.Deactivate();
 

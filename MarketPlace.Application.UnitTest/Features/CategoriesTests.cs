@@ -55,11 +55,11 @@ namespace MarketPlace.Application.UnitTest.Features
             var existingCategory = Domain.Category.Create("Electronics", "Electronic devices and gadgets").Data!;
             var command = new UpdateCategoryCommand()
             {
-                Id = existingCategory.Id,
+                Id = existingCategory.Id.ToString(),
                 Name = "Updated Name",
                 Description = "Updated Description"
             };
-            _categoryRepositoryMock.Setup(repo => repo.GetByIdAsync(command.Id)).ReturnsAsync(existingCategory);
+            _categoryRepositoryMock.Setup(repo => repo.GetByIdAsync(existingCategory.Id)).ReturnsAsync(existingCategory);
 
             // Act
             var result = await _updateCategoryCommandHandler.Handle(command, CancellationToken.None);
@@ -74,13 +74,14 @@ namespace MarketPlace.Application.UnitTest.Features
         public async Task UpdateCategory_CategoryNotFound_Failure()
         {
             // Arrange
+            var missingId = Guid.NewGuid();
             var command = new UpdateCategoryCommand()
             {
-                Id = Guid.NewGuid(),
+                Id = missingId.ToString(),
                 Name = "Updated Name",
                 Description = "Updated Description"
             };
-            _categoryRepositoryMock.Setup(repo => repo.GetByIdAsync(command.Id))
+            _categoryRepositoryMock.Setup(repo => repo.GetByIdAsync(missingId))
                 .ReturnsAsync((Domain.Category?)null);
 
             // Act
@@ -98,9 +99,9 @@ namespace MarketPlace.Application.UnitTest.Features
             var existingCategory = Domain.Category.Create("Electronics", "Electronic devices and gadgets").Data!;
             var command = new DeleteCategoryCommand()
             {
-                Id = existingCategory.Id
+                Id = existingCategory.Id.ToString()
             };
-            _categoryRepositoryMock.Setup(repo => repo.GetByIdAsync(command.Id))
+            _categoryRepositoryMock.Setup(repo => repo.GetByIdAsync(existingCategory.Id))
                 .ReturnsAsync(existingCategory);
 
             // Act
@@ -116,11 +117,12 @@ namespace MarketPlace.Application.UnitTest.Features
         public async Task DeleteCategory_CategoryNotFound_Failure()
         {
             // Arrange
+            var missingId = Guid.NewGuid();
             var command = new DeleteCategoryCommand()
             {
-                Id = Guid.NewGuid()
+                Id = missingId.ToString()
             };
-            _categoryRepositoryMock.Setup(repo => repo.GetByIdAsync(command.Id))
+            _categoryRepositoryMock.Setup(repo => repo.GetByIdAsync(missingId))
                 .ReturnsAsync((Domain.Category?)null);
             // Act
             var result = await _deleteCategoryCommandHandler.Handle(command, CancellationToken.None);

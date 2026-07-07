@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MarketPlace.Shared;
 
 namespace MarketPlace.Application.Features.Orders.Commands.CancelOrder
 {
@@ -8,9 +9,8 @@ namespace MarketPlace.Application.Features.Orders.Commands.CancelOrder
         {
             RuleFor(x => x.OrderId)
                 .NotEmpty().WithMessage("OrderId is required.")
-                .Must(BeAValidGuid).WithMessage("UserId must be a valid GUID.");
+                .Must(ValidationHelpers.BeAValidGuid).WithMessage("UserId must be a valid GUID.");
 
         }
-        private bool BeAValidGuid(string value) => Guid.TryParse(value, out _);
     }
 }
