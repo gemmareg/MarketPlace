@@ -1,10 +1,10 @@
 ﻿using Auth.Authorization.Extensions;
 using MarketPlace.Host.Consumers;
 using MarketPlace.Host.Extensions.Options;
+using MessageBroker.Consumer.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RabbitMQ.Client;
 using System.Text;
 
 namespace MarketPlace.Host.Extensions
@@ -16,9 +16,14 @@ namespace MarketPlace.Host.Extensions
             services.AddJwtAuthentication(configuration);
             services.AddAuthAuthorization();
             services.AddSwaggerDocumentation();
-            services.AddRabbitMq(configuration);
-            services.AddHostedService<UserRegisteredConsumer>();
-            services.AddHostedService<UserSoftDeletedConsumer>();
+            services.AddMessageBrokerConsumer<MarketPlaceDeliveryHandler>(options =>
+            {
+                options.ConsumerName = "MarketPlace";
+                options.Host = configuration["RabbitMQ:Host"]!;
+                options.Port = int.Parse(configuration["RabbitMQ:Port"] ?? "5672");
+                options.User = configuration["RabbitMQ:User"]!;
+                options.Password = configuration["RabbitMQ:Password"]!;
+            });
             services.AddHttpContextAccessor();
 
             return services;
@@ -81,26 +86,6 @@ namespace MarketPlace.Host.Extensions
                     }
                 });
             });
-
-            return services;
-        }
-
-        public static IServiceCollection AddRabbitMq(this IServiceCollection services, IConfiguration config)
-        {
-            services.AddSingleton<IConnectionFactory>(_ =>
-                new ConnectionFactory
-                {
-                    HostName = config["RabbitMQ:Host"],
-                    Port = int.Parse(config["RabbitMQ:Port"] ?? "5672"),
-                    UserName = config["RabbitMQ:User"],
-                    Password = config["RabbitMQ:Password"]
-                });
-
-            services.AddSingleton<IConnection>(sp =>
-                sp.GetRequiredService<IConnectionFactory>().CreateConnection());
-
-            services.AddSingleton<IModel>(sp =>
-                sp.GetRequiredService<IConnection>().CreateModel());
 
             return services;
         }
