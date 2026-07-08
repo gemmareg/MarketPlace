@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MarketPlace.Shared;
 
 namespace MarketPlace.Application.Features.Orders.Queries.GetOrdersByUser
 {
@@ -8,9 +9,7 @@ namespace MarketPlace.Application.Features.Orders.Queries.GetOrdersByUser
         {
             RuleFor(x => x.UserId)
                 .NotEmpty().WithMessage("UserId cannot be empty.")
-                .Must(BeAValidGuid).WithMessage("UserId must be a valid GUID.");
+                .Must(ValidationHelpers.BeAValidGuid).WithMessage("UserId must be a valid GUID.");
         }
-
-        private bool BeAValidGuid(string value) => Guid.TryParse(value, out _);
     }
 }

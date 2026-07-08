@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MarketPlace.Application.Abstractions.Repositories;
 using MarketPlace.Application.Abstractions.Services;
 using MarketPlace.Application.Abstractions.UnitOfWork;
@@ -17,7 +16,6 @@ public class OrderServiceTests
     private readonly Mock<ICartItemRepository> _cartRepo = new();
     private readonly Mock<IUserRepository> _userRepo = new();
     private readonly Mock<IProductRepository> _productRepo = new();
-    private readonly Mock<IMapper> _mapper = new();
     private readonly Mock<IUnitOfWork> _uow = new();
 
     private const string USER_ID = "0a046732-ab9a-41bf-9ba9-c2f242baf7a2";
@@ -28,7 +26,7 @@ public class OrderServiceTests
 
     public OrderServiceTests()
     {
-        _orderService = new OrderService(_orderRepo.Object, _cartRepo.Object, _userRepo.Object, _productRepo.Object, _uow.Object, _mapper.Object);
+        _orderService = new OrderService(_orderRepo.Object, _cartRepo.Object, _userRepo.Object, _productRepo.Object, _uow.Object);
     }
 
     #region CreateOrder Tests
@@ -118,8 +116,6 @@ public class OrderServiceTests
         _productRepo.Setup(p => p.GetProductsByIdsAsync(It.IsAny<List<Guid>>()))
                     .ReturnsAsync(new List<Product> { product });
 
-        var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
-
         // Act
         var result = await _orderService.CreateOrder(USER_ID, new List<string> { CARTITEM_ID });
 
@@ -141,14 +137,14 @@ public class OrderServiceTests
         var cartItem = CartItem.Create(user, product, 2).Data!;
         var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
 
-        _orderRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+        _orderRepo.Setup(r => r.GetOrderByIdWithOrderItemsAsync(It.IsAny<Guid>()))
                   .ReturnsAsync(order);
 
         _productRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                     .ReturnsAsync(product);
 
         // Act
-        var result = await _orderService.CancelOrder(order.Id.ToString());
+        var result = await _orderService.CancelOrder(USER_ID, order.Id.ToString());
 
         // Assert
         Assert.True(result.Success);
@@ -161,13 +157,34 @@ public class OrderServiceTests
     public async Task CancelOrder_ShouldFail_WhenOrderNotFound()
     {
         // Arrange
-        _orderRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+        _orderRepo.Setup(r => r.GetOrderByIdWithOrderItemsAsync(It.IsAny<Guid>()))
                   .ReturnsAsync((Order?)null);
         // Act
-        var result = await _orderService.CancelOrder(Guid.NewGuid().ToString());
+        var result = await _orderService.CancelOrder(USER_ID, Guid.NewGuid().ToString());
         // Assert
         Assert.False(result.Success);
         Assert.Equal("Order not found", result.Message);
+    }
+
+    [Fact]
+    public async Task CancelOrder_ShouldFail_WhenUserDoesNotOwnOrder()
+    {
+        // Arrange
+        var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
+        var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
+        var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
+        var cartItem = CartItem.Create(user, product, 2).Data!;
+        var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
+
+        _orderRepo.Setup(r => r.GetOrderByIdWithOrderItemsAsync(It.IsAny<Guid>()))
+                  .ReturnsAsync(order);
+
+        // Act
+        var result = await _orderService.CancelOrder(Guid.NewGuid().ToString(), order.Id.ToString());
+
+        // Assert
+        Assert.False(result.Success);
+        Assert.Equal("Unauthorized", result.Message);
     }
     #endregion
 
@@ -225,7 +242,7 @@ public class OrderServiceTests
                   .ReturnsAsync(order);
 
         // Act
-        var result = await _orderService.SendOrder(order.Id.ToString());
+        var result = await _orderService.SendOrder(order.Id.ToString(), USER_ID);
 
         // Assert
         Assert.True(result.Success);
@@ -241,7 +258,7 @@ public class OrderServiceTests
                   .ReturnsAsync((Order?)null);
 
         // Act
-        var result = await _orderService.SendOrder(Guid.NewGuid().ToString());
+        var result = await _orderService.SendOrder(Guid.NewGuid().ToString(), USER_ID);
 
         // Assert
         Assert.False(result.Success);
@@ -290,7 +307,7 @@ public class OrderServiceTests
 
     #region GetOrderById Tests
     [Fact]
-    public async Task GetOrderById_ShouldReturnOrder_WhenFound()
+    public async Task GetOrderById_ShouldReturnOrder_WhenOwnedByRequester()
     {
         // Arrange
         var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
@@ -298,16 +315,36 @@ public class OrderServiceTests
         var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
         var cartItem = CartItem.Create(user, product, 1).Data!;
         var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
-        var orderDto = new OrderDto() { Id = order.Id.ToString(), UserId = order.UserId.ToString(), OrderDate = order.CreatedDate, TotalAmount = order.Total, Status = order.Status.ToString() };
+        HydrateOrderItemProducts(order, product);
 
-        _orderRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+        _orderRepo.Setup(r => r.GetOrderWithCartItemsAndProductsByIdAsync(It.IsAny<Guid>()))
                   .ReturnsAsync(order);
 
-        _mapper.Setup(m => m.Map<OrderDto>(It.IsAny<Order>()))
-               .Returns(orderDto);
+        // Act
+        var result = await _orderService.GetOrderById(USER_ID, order.Id.ToString(), hasReadAnyPermission: false);
+
+        // Assert
+        Assert.True(result.Success);
+        Assert.NotNull(result.Data);
+        Assert.Equal(order.Id.ToString(), result.Data.Id);
+    }
+
+    [Fact]
+    public async Task GetOrderById_ShouldSucceed_WhenNotOwnerButHasReadAnyPermission()
+    {
+        // Arrange
+        var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
+        var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
+        var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
+        var cartItem = CartItem.Create(user, product, 1).Data!;
+        var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
+        HydrateOrderItemProducts(order, product);
+
+        _orderRepo.Setup(r => r.GetOrderWithCartItemsAndProductsByIdAsync(It.IsAny<Guid>()))
+                  .ReturnsAsync(order);
 
         // Act
-        var result = await _orderService.GetOrderById(order.Id.ToString());
+        var result = await _orderService.GetOrderById(Guid.NewGuid().ToString(), order.Id.ToString(), hasReadAnyPermission: true);
 
         // Assert
         Assert.True(result.Success);
@@ -315,14 +352,35 @@ public class OrderServiceTests
     }
 
     [Fact]
+    public async Task GetOrderById_ShouldFail_WhenNotOwnerAndNoReadAnyPermission()
+    {
+        // Arrange
+        var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
+        var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
+        var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
+        var cartItem = CartItem.Create(user, product, 1).Data!;
+        var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
+
+        _orderRepo.Setup(r => r.GetOrderWithCartItemsAndProductsByIdAsync(It.IsAny<Guid>()))
+                  .ReturnsAsync(order);
+
+        // Act
+        var result = await _orderService.GetOrderById(Guid.NewGuid().ToString(), order.Id.ToString(), hasReadAnyPermission: false);
+
+        // Assert
+        Assert.False(result.Success);
+        Assert.Equal("Unauthorized", result.Message);
+    }
+
+    [Fact]
     public async Task GetOrderById_ShouldFail_WhenOrderNotFound()
     {
         // Arrange
-        _orderRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+        _orderRepo.Setup(r => r.GetOrderWithCartItemsAndProductsByIdAsync(It.IsAny<Guid>()))
                   .ReturnsAsync((Order?)null);
 
         // Act
-        var result = await _orderService.GetOrderById(Guid.NewGuid().ToString());
+        var result = await _orderService.GetOrderById(USER_ID, Guid.NewGuid().ToString(), hasReadAnyPermission: false);
 
         // Assert
         Assert.False(result.Success);
@@ -335,18 +393,16 @@ public class OrderServiceTests
     public async Task GetOrdersByUserId_ShouldReturnOrders_WhenFound()
     {
         // Arrange
-        var user = User.Create(Guid.Parse(USER_ID), USER_NAME).Data!;
-        var category = Category.Create("Electronics", "Electronic devices and gadgets").Data!;
-        var product = Product.Create(category, user, "Test Product", "Test Description", 100, 10, DateTime.Now, ProductState.Active).Data!;
-        var cartItem = CartItem.Create(user, product, 1).Data!;
-        var order = Order.Create(user, new List<CartItem> { cartItem }).Data!;
-        var orderDto = new OrderDto() { Id = order.Id.ToString(), UserId = order.UserId.ToString(), OrderDate = order.CreatedDate, TotalAmount = order.Total, Status = order.Status.ToString() };
+        var summary = new OrderResumedDto
+        {
+            OrderId = Guid.NewGuid(),
+            ItemsCount = 1,
+            Total = 100m,
+            DateCreated = DateTime.Now
+        };
 
         _orderRepo.Setup(r => r.GetOrdersByUserIdAsync(It.IsAny<Guid>()))
-                  .ReturnsAsync(new List<Order> { order });
-
-        _mapper.Setup(m => m.Map<List<OrderDto>>(It.IsAny<List<Order>>()))
-               .Returns([orderDto]);
+                  .ReturnsAsync(new List<OrderResumedDto> { summary });
 
         // Act
         var result = await _orderService.GetOrdersByUserId(USER_ID);
@@ -362,10 +418,7 @@ public class OrderServiceTests
     {
         // Arrange
         _orderRepo.Setup(r => r.GetOrdersByUserIdAsync(It.IsAny<Guid>()))
-                  .ReturnsAsync(new List<Order>());
-
-        _mapper.Setup(m => m.Map<List<OrderDto>>(It.IsAny<List<Order>>()))
-               .Returns(new List<OrderDto>());
+                  .ReturnsAsync(new List<OrderResumedDto>());
 
         // Act
         var result = await _orderService.GetOrdersByUserId(USER_ID);
@@ -376,4 +429,11 @@ public class OrderServiceTests
         Assert.Empty(result.Data);
     }
     #endregion
+
+    private static void HydrateOrderItemProducts(Order order, Product product)
+    {
+        var productProperty = typeof(OrderItem).GetProperty(nameof(OrderItem.Product))!;
+        foreach (var item in order.OrderItems)
+            productProperty.SetValue(item, product);
+    }
 }

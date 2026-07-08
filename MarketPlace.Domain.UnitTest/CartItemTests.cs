@@ -1,4 +1,6 @@
-﻿using MarketPlace.Shared;
+﻿using MarketPlace.Domain.Common;
+using MarketPlace.Shared;
+using static MarketPlace.Shared.Enums;
 
 namespace MarketPlace.Domain.UnitTest
 {
@@ -16,9 +18,13 @@ namespace MarketPlace.Domain.UnitTest
         [InlineData(VALID_USERID, VALID_PRODUCTID, VALID_QUANTITY, true, "")]
         public void Create_ShouldReturnExpectedResult(string userId, string productId, int quantity, bool expectedSuccess, string expectedMessage)
         {
+            // Arrange
+            var user = WithId(User.Create(Guid.NewGuid(), "Test User").Data!, new Guid(userId));
+            var category = Category.Create("Electronics", "Desc").Data!;
+            var product = WithId(Product.Create(category, user, "Product", "Desc", 10m, 10, DateTime.UtcNow, ProductState.Active).Data!, new Guid(productId));
 
             // Act
-            var result = CartItem.Create(new Guid(userId), new Guid(productId), quantity);
+            var result = CartItem.Create(user, product, quantity);
 
             // Assert
             Assert.Equal(expectedSuccess, result.Success);
@@ -35,6 +41,12 @@ namespace MarketPlace.Domain.UnitTest
             {
                 Assert.Null(result.Data);
             }
+        }
+
+        private static T WithId<T>(T entity, Guid id) where T : BaseEntity
+        {
+            typeof(BaseEntity).GetProperty(nameof(BaseEntity.Id))!.SetValue(entity, id);
+            return entity;
         }
     }
 }

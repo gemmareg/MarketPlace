@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MarketPlace.Shared;
 
 namespace MarketPlace.Application.Features.Products.Queries.GetProductById
 {
@@ -8,9 +9,7 @@ namespace MarketPlace.Application.Features.Products.Queries.GetProductById
         {
             RuleFor(x => x.ProductId)
                 .NotEmpty().WithMessage("ProductId is required.")
-                .Must(BeAValidGuid).WithMessage("ProductId must be a valid GUID.");
+                .Must(ValidationHelpers.BeAValidGuid).WithMessage("ProductId must be a valid GUID.");
         }
-
-        private static bool BeAValidGuid(string? value) => Guid.TryParse(value, out _);
     }
 }

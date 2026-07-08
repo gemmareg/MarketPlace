@@ -5,18 +5,11 @@ using MediatR;
 
 namespace MarketPlace.Application.Features.Orders.Queries.GetOrdersByUser
 {
-    public class GetOrdersByUserIdQueryHandler : IRequestHandler<GetOrdersByUserIdQuery, Result<List<OrderDto>>>
+    public class GetOrdersByUserIdQueryHandler(IOrderService orderService) : IRequestHandler<GetOrdersByUserIdQuery, Result<List<OrderResumedDto>>>
     {
-        private readonly IOrderService _orderService;
-
-        public GetOrdersByUserIdQueryHandler(IOrderService orderService)
+        public async Task<Result<List<OrderResumedDto>>> Handle(GetOrdersByUserIdQuery request, CancellationToken cancellationToken)
         {
-            _orderService = orderService;
-        }
-
-        public async Task<Result<List<OrderDto>>> Handle(GetOrdersByUserIdQuery request, CancellationToken cancellationToken)
-        {
-            return await _orderService.GetOrdersByUserId(request.UserId.ToString());
+            return await orderService.GetOrdersByUserId(request.UserId.ToString());
         }
     }
 }

@@ -13,13 +13,13 @@ namespace MarketPlace.Application.Services
         public async Task<Result> CreateUserFromEvent(UserRegisteredEvent evt)
         {
             Guid userId;
-            if (!Guid.TryParse(evt.UserId, out userId))
+            if (!Guid.TryParse(evt.userId, out userId))
             {
-                logger.LogError("Failed to create user. {UserId} is not a valid guid", evt.UserId);
+                logger.LogError("Failed to create user. {UserId} is not a valid guid", evt.userId);
                 return Result.Fail("User id is not a valid guid");
             }
 
-            var resultUser = User.Create(userId, evt.Name);
+            var resultUser = User.Create(userId, evt.name);
             if (!resultUser.Success)
             {
                 logger.LogError("Could not create user: {Message}", resultUser.Message);
@@ -38,9 +38,9 @@ namespace MarketPlace.Application.Services
         public async Task<Result> SoftDeleteUserFromEvent(UserSoftDeletedEvent evt)
         {
             Guid userId;
-            if (!Guid.TryParse(evt.UserId, out userId))
+            if (!Guid.TryParse(evt.userId, out userId))
             {
-                logger.LogError("Failed to soft delete user. {UserId} is not a valid guid", evt.UserId);
+                logger.LogError("Failed to soft delete user. {UserId} is not a valid guid", evt.userId);
                 return Result.Fail("User id is not a valid guid");
             }
             var user = await userRepository.GetByIdAsync(userId);

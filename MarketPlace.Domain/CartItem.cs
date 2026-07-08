@@ -45,5 +45,12 @@ namespace MarketPlace.Domain
             Quantity = newQuantity;
             return Result.Ok();
         }
+
+        public Result ValidateStock(Product product)
+        {
+            if (product.Stock < Quantity)
+                return Result.Fail(ErrorMessages.INSUFFICIENT_STOCK);
+            return Result.Ok();
+        }
     }
 }

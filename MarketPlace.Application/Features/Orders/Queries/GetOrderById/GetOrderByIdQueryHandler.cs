@@ -16,7 +16,7 @@ namespace MarketPlace.Application.Features.Orders.Queries.GetOrderById
 
         public async Task<Result<OrderDto>> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _orderService.GetOrderById(request.OrderId);
+            return await _orderService.GetOrderById(request.UserId, request.OrderId, request.HasReadAnyPermission);
         }
     }
 }

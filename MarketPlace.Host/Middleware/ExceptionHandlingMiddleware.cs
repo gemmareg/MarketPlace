@@ -26,8 +26,7 @@ namespace MarketPlace.Host.Middleware
                 _logger.LogError(ex, "Unhandled exception");
                 var json = JsonSerializer.Serialize(new
                 {
-                    error = ex.Message,
-                    stackTrace = ex.StackTrace
+                    error = ex.Message
                 });
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await context.Response.WriteAsync(json);

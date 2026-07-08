@@ -6,12 +6,13 @@ namespace MarketPlace.Application.Abstractions.Services
 {
     public interface IOrderService
     {
-        Task<Result> CreateOrder(string userId, List<string> cartItemIds);
-        Task<Result> CancelOrder(string orderId);
+        Task<Result<Guid>> CreateOrder(string userId, List<string> cartItemIds);
+        Task<Result> CancelOrder(string userId, string orderId);
         Task<Result> MarkOrderAsPaid(string orderId, int paymentMethod);
-        Task<Result> SendOrder(string orderId);
+        Task<Result> SendOrder(string orderId, string userId);
         Task<Result> DeliverOrder(string orderId);
-        Task<Result<OrderDto>> GetOrderById(string orderId);
-        Task<Result<List<OrderDto>>> GetOrdersByUserId(string userId);
+        Task<Result<OrderDto>> GetOrderById(string sellerId, string orderId, bool hasReadAnyPermission);
+        Task<Result<List<OrderResumedDto>>> GetOrdersByUserId(string userId);
+        Task<Result<List<OrderResumedDto>>> GetAllOrdersAsync(string? customerId, DateTime? from, DateTime? to);
     }
 }

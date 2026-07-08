@@ -1,4 +1,5 @@
-﻿using MarketPlace.Application.Dtos;
+﻿using Auth.Contracts.Extensions;
+using MarketPlace.Application.Dtos;
 using MarketPlace.Application.Features.Products.Commands.CreateProduct;
 using MarketPlace.Application.Features.Products.Commands.DeleteProduct;
 using MarketPlace.Application.Features.Products.Commands.UpdateProduct;
@@ -8,6 +9,7 @@ using MarketPlace.Application.Features.Products.Queries.GetProductsList;
 using MarketPlace.Application.Features.Products.Queries.GetProductsListByCategory;
 using MarketPlace.Host.Dto;
 using MarketPlace.Host.Extensions;
+using MarketPlace.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -108,7 +110,7 @@ namespace MarketPlace.Host.Controllers.v1
                 Stock = request.Stock,
                 State = request.State,
                 UserId = User.GetId(),
-                IsAdmin = User.IsAdmin()
+                HasUpdateAnyPermission = User.HasPermission(MarketPlacePermissions.ProductsUpdateAny)
             };
 
             var result = await _mediator.Send(command);
@@ -127,7 +129,7 @@ namespace MarketPlace.Host.Controllers.v1
             {
                 Id = id,
                 UserId = User.GetId(),
-                IsAdmin = User.IsAdmin()
+                HasDeleteAnyPermission = User.HasPermission(MarketPlacePermissions.ProductsDeleteAny)
             };
 
             var result = await _mediator.Send(command);

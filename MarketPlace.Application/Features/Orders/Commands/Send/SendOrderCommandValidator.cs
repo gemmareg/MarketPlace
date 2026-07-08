@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using MarketPlace.Shared;
 
-namespace MarketPlace.Application.Features.Orders.Commands.DeliverOrder
+namespace MarketPlace.Application.Features.Orders.Commands.Send
 {
-    public class DeliverOrderCommandValidator : AbstractValidator<DeliverOrderCommand>
+    public class SendOrderCommandValidator : AbstractValidator<SendOrderCommand>
     {
-        public DeliverOrderCommandValidator()
+        public SendOrderCommandValidator()
         {
             RuleFor(x => x.OrderId)
                 .NotEmpty().WithMessage("OrderId is required.")

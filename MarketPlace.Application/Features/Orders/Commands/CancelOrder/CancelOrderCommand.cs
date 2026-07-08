@@ -5,6 +5,7 @@ namespace MarketPlace.Application.Features.Orders.Commands.CancelOrder
 {
     public class CancelOrderCommand : IRequest<Result>
     {
+        public string UserId { get; set; }
         public string OrderId { get; set; }
     }
 }

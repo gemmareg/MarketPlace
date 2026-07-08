@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-using MarketPlace.Application.Abstractions.Repositories;
+﻿using MarketPlace.Application.Abstractions.Repositories;
 using MarketPlace.Application.Abstractions.Services;
 using MarketPlace.Application.Abstractions.UnitOfWork;
 using MarketPlace.Application.Dtos;
+using MarketPlace.Application.Extensions.Mapping;
 using MarketPlace.Domain;
 using MarketPlace.Shared.Result.Generic;
 using MarketPlace.Shared.Result.NonGeneric;
@@ -17,49 +17,51 @@ namespace MarketPlace.Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
         public OrderService(
             IOrderRepository orderRepository,
             ICartItemRepository cartItemRepository,
             IUserRepository userRepository,
             IProductRepository productRepository,
-            IUnitOfWork unitOfWork,
-            IMapper mapper)
+            IUnitOfWork unitOfWork)
         {
             _orderRepository = orderRepository;
             _cartItemRepository = cartItemRepository;
             _userRepository = userRepository;
             _productRepository = productRepository;
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
-        public async Task<Result> CreateOrder(string userId, List<string> cartItemIds)
+        public async Task<Result<Guid>> CreateOrder(string userId, List<string> cartItemIds)
         {
             var user = await GetUserAsync(userId);
-            if (user == null) return Result.Fail("User doesn't exist");
+            if (user == null) return Result<Guid>.Fail("User doesn't exist");
 
             var cartItems = await GetCartItemsAsync(cartItemIds);
-            if (cartItems == null || cartItems.Count == 0) return Result.Fail("No items found");
+            if (cartItems == null || cartItems.Count == 0) return Result<Guid>.Fail("No items found");
+
+            var forbiddenItem = cartItems.FirstOrDefault(c => c.UserId != Guid.Parse(userId));
+            if (forbiddenItem != null) return Result<Guid>.Fail("One or more items do not belong to the user");
 
             var stockCheck = await ValidateStock(cartItems);
-            if (!stockCheck.Success) return stockCheck;
+            if (!stockCheck.Success) return Result<Guid>.Fail(stockCheck.Message);
 
             var orderResult = Order.Create(user, cartItems);
-            if (!orderResult.Success) return orderResult;
+            if (!orderResult.Success) return Result<Guid>.Fail(orderResult.Message);
 
             await DeductStockAsync(cartItems);
             await _orderRepository.AddAsync(orderResult.Data!);
             await _unitOfWork.SaveChangesAsync();
 
-            return Result.Ok();
+            return Result<Guid>.Ok(orderResult.Data!.Id);
         }
 
-        public async Task<Result> CancelOrder(string orderId)
+        public async Task<Result> CancelOrder(string userId, string orderId)
         {
-            var order = await _orderRepository.GetByIdAsync(Guid.Parse(orderId));
-            if (order == null) return Result.Fail("Order not found");      
+            var order = await _orderRepository.GetOrderByIdWithOrderItemsAsync(Guid.Parse(orderId));
+            if (order == null) return Result.Fail("Order not found");
+
+            if (order.UserId != Guid.Parse(userId)) return Result.Fail("Unauthorized");
 
             order.Cancel();
             await RestoreStockAsync(order.OrderItems);
@@ -74,7 +76,7 @@ namespace MarketPlace.Application.Services
         {
             var order = await _orderRepository.GetByIdAsync(Guid.Parse(orderId));
             if (order == null) return Result.Fail("Order not found");
-            
+
             order.MarkAsPaid((PaymentMethod)paymentMethod);
 
             await _orderRepository.UpdateAsync(order);
@@ -82,12 +84,12 @@ namespace MarketPlace.Application.Services
             return Result.Ok();
         }
 
-        public async Task<Result> SendOrder(string orderId)
+        public async Task<Result> SendOrder(string orderId, string userId)
         {
             var order = await _orderRepository.GetByIdAsync(Guid.Parse(orderId));
             if (order == null) return Result.Fail("Order not found");
             order.Send();
-            
+
             await _orderRepository.UpdateAsync(order);
             await _unitOfWork.SaveChangesAsync();
             return Result.Ok();
@@ -98,24 +100,33 @@ namespace MarketPlace.Application.Services
             var order = await _orderRepository.GetByIdAsync(Guid.Parse(orderId));
             if (order == null) return Result.Fail("Order not found");
             order.Deliver();
-            
+
             await _orderRepository.UpdateAsync(order);
             await _unitOfWork.SaveChangesAsync();
             return Result.Ok();
         }
 
-        public async Task<Result<OrderDto>> GetOrderById(string orderId)
+        public async Task<Result<OrderDto>> GetOrderById(string sellerId, string orderId, bool hasReadAnyPermission)
         {
-            var order = await _orderRepository.GetByIdAsync(Guid.Parse(orderId));
+            var order = await _orderRepository.GetOrderWithCartItemsAndProductsByIdAsync(Guid.Parse(orderId));
             if (order == null) return Result<OrderDto>.Fail("Order not found");
 
-            return Result<OrderDto>.Ok(_mapper.Map<OrderDto>(order));
+            if (order.UserId != Guid.Parse(sellerId) && !hasReadAnyPermission) return Result<OrderDto>.Fail("Unauthorized");
+
+            return Result<OrderDto>.Ok(order.ToOrderDto());
         }
 
-        public async Task<Result<List<OrderDto>>> GetOrdersByUserId(string userId)
+        public async Task<Result<List<OrderResumedDto>>> GetOrdersByUserId(string userId)
         {
             var orders = await _orderRepository.GetOrdersByUserIdAsync(Guid.Parse(userId));
-            return Result<List<OrderDto>>.Ok(_mapper.Map<List<OrderDto>>(orders));
+            return Result<List<OrderResumedDto>>.Ok(orders);
+        }
+
+        public async Task<Result<List<OrderResumedDto>>> GetAllOrdersAsync(string? customerId, DateTime? from, DateTime? to)
+        {
+            var userId = customerId != null ? Guid.Parse(customerId) : Guid.Empty;
+            var orders = await _orderRepository.GetOrdersList(userId, from, to);
+            return Result<List<OrderResumedDto>>.Ok(orders);
         }
 
         #region private methods
@@ -128,13 +139,13 @@ namespace MarketPlace.Application.Services
         private async Task<Result> ValidateStock(IEnumerable<CartItem> cartItems)
         {
             var products = await _productRepository.GetProductsByIdsAsync(cartItems.Select(c => c.ProductId).ToList());
-            
+
             foreach (var item in cartItems)
             {
                 var product = products.FirstOrDefault(p => p.Id == item.ProductId);
                 if (product == null)
                     return Result.Fail($"Product with ID {item.ProductId} not found");
-                if (product.Stock < item.Quantity)
+                if (!item.ValidateStock(product).Success)
                     return Result.Fail($"Insufficient stock for product {product.Name}");
             }
 
@@ -145,9 +156,9 @@ namespace MarketPlace.Application.Services
         {
             foreach (var item in cartItems)
             {
-                var product = await _productRepository.GetByIdAsync(item.ProductId); 
-                product.DeductStock(item.Quantity); 
-                
+                var product = await _productRepository.GetByIdAsync(item.ProductId);
+                product.DeductStock(item.Quantity);
+
                 await _productRepository.UpdateAsync(product);
             }
         }
@@ -156,9 +167,9 @@ namespace MarketPlace.Application.Services
         {
             foreach (var item in orderItems)
             {
-                var product = await _productRepository.GetByIdAsync(item.ProductId); 
-                product!.ReplenishStock(item.Quantity); 
-                
+                var product = await _productRepository.GetByIdAsync(item.ProductId);
+                product!.ReplenishStock(item.Quantity);
+
                 await _productRepository.UpdateAsync(product);
             }
         }

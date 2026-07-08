@@ -1,9 +1,11 @@
-﻿using MarketPlace.Application.Features.Categories.Commands.CreateCategory;
+﻿using Auth.Authorization.Attributes;
+using MarketPlace.Application.Features.Categories.Commands.CreateCategory;
 using MarketPlace.Application.Features.Categories.Commands.DeleteCategory;
 using MarketPlace.Application.Features.Categories.Commands.UpdateCategory;
 using MarketPlace.Application.Features.Categories.Queries.GetCategoryList;
 using MarketPlace.Domain;
 using MarketPlace.Host.Extensions;
+using MarketPlace.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +37,8 @@ namespace MarketPlace.Host.Controllers.v1
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
+        [RequiresPermission(MarketPlacePermissions.CategoriesCreate)]
         [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -47,7 +50,8 @@ namespace MarketPlace.Host.Controllers.v1
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
+        [RequiresPermission(MarketPlacePermissions.CategoriesUpdate)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -59,7 +63,8 @@ namespace MarketPlace.Host.Controllers.v1
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
+        [RequiresPermission(MarketPlacePermissions.CategoriesDelete)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

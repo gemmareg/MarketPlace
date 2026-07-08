@@ -4,7 +4,7 @@ using MediatR;
 
 namespace MarketPlace.Application.Features.Orders.Queries.GetOrdersByUser
 {
-    public class GetOrdersByUserIdQuery : IRequest<Result<List<OrderDto>>>
+    public class GetOrdersByUserIdQuery : IRequest<Result<List<OrderResumedDto>>>
     {
         public string UserId { get; set; }
     }
